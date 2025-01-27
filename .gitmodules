@@ -19,3 +19,4 @@
 [submodule "freestream"]
 	path = freestream
 	url = git@github.com:Duke-QCD/freestream.git
+	branch = e7dc0a809fe91c3b0e13072e9601bf308771d53a
