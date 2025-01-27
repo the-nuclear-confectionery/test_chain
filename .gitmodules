@@ -1,0 +1,4 @@
+[submodule "models/trento"]
+	path = models/trento
+	url = git@github.com:the-nuclear-confectionery/trento.git
+	branch = cpp
