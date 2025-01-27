@@ -2,3 +2,20 @@
 	path = models/trento
 	url = git@github.com:the-nuclear-confectionery/trento.git
 	branch = cpp
+[submodule "models/CCAKE"]
+	path = models/CCAKE
+	url = git@github.com:the-nuclear-confectionery/CCAKE.git
+	branch = rework_eom
+[submodule "models/smash"]
+	path = models/smash
+	url = git@github.com:the-nuclear-confectionery/smash.git
+[submodule "models/iS3D"]
+	path = models/iS3D
+	url = git@github.com:the-nuclear-confectionery/iS3D.git
+[submodule "models/ICCING"]
+	path = models/ICCING
+	url = git@github.com:the-nuclear-confectionery/ICCING.git
+	branch =  dba17456a1a213ffc36399548064fef02096aff4
+[submodule "freestream"]
+	path = freestream
+	url = git@github.com:Duke-QCD/freestream.git
