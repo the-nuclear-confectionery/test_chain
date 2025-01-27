@@ -1,0 +1,42 @@
+name: ctop
+channels:
+  - conda-forge
+dependencies:
+  # Python and scientific libraries
+  - python=3.10
+  - h5py
+  - scipy
+  - matplotlib
+  - pandas
+  
+  # General libraries and tools
+  - parallel
+  - gxx  # Compiler
+  - openmpi
+  - hdf5
+  - zlib
+  - doxygen
+  - gsl
+  - cmake
+  - eigen
+  
+  # Boost (specific version)
+  - boost=1.78.0
+  - boost-cpp=1.78.0
+  
+  # ROOT and related dependencies
+  - root
+  - root_base
+  - libselinux-cos7-x86_64
+  - mesa-libgl-cos7-x86_64
+  - xorg-libx11
+  - libxext-cos7-x86_64
+  - libxdamage-cos7-x86_64
+  - libxfixes-cos7-x86_64
+  - libxxf86vm-cos7-x86_64
+  - libxcb-cos7-x86_64
+  - libxau-cos7-x86_64
+  - expat-cos7-x86_64
+  - mesalib
+  - ca-certificates
+  - openssl
