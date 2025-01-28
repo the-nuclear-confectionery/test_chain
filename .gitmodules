@@ -12,6 +12,7 @@
 [submodule "models/iS3D"]
 	path = models/iS3D
 	url = git@github.com:the-nuclear-confectionery/iS3D.git
+	branch = master
 [submodule "models/ICCING"]
 	path = models/ICCING
 	url = git@github.com:the-nuclear-confectionery/ICCING.git
