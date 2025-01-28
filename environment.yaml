@@ -9,6 +9,7 @@ dependencies:
   - matplotlib
   - pandas
   - uproot
+  - seaborn
   
   # General libraries and tools
   - parallel
