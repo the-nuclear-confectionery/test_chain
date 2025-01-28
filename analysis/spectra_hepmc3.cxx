@@ -76,6 +76,8 @@ void charged_spectra(const std::string& file_in_path, const TString& file_out_pa
     std::vector<TH1D> hReQ_omega;
     std::vector<TH1D> hImQ_omega;
 
+    //sampler counter 
+    TH1D hSampleCounter("hSampleCounter", "hSampleCounter", 1, 0, 1);
 
     // Histograms for charged particles
     TH1D hpt_charged("hpt_charged", "p_{T} spectra - charged particles", nbins_pt, 0, max_pt);
@@ -157,6 +159,7 @@ void charged_spectra(const std::string& file_in_path, const TString& file_out_pa
     double ncharged = 0.0;
     double n_total = 0.0;
     double mean_pt = 0.0;
+    hSampleCounter.Fill(0.5, nsamples);
     for (int isample = 0; isample < nsamples; ++isample) {
         tree->GetEntry(isample);
     
@@ -289,7 +292,7 @@ void charged_spectra(const std::string& file_in_path, const TString& file_out_pa
     file_out->Write();
     file_out->Close();
     file_in->Close();
-    std::cout << "Mean pT: " << mean_pt  / nsamples << std::endl;
+    std::cout << "Mean pT: " << mean_pt  / dn_deta << std::endl;
     std::cout << "dN/deta: " << dn_deta / nsamples << std::endl;
     std::cout << "Ncharged: " << ncharged / nsamples << std::endl;
     std::cout << "N: " << n_total / nsamples << std::endl;
