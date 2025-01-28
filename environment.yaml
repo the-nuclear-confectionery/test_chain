@@ -8,6 +8,7 @@ dependencies:
   - scipy
   - matplotlib
   - pandas
+  - uproot
   
   # General libraries and tools
   - parallel
