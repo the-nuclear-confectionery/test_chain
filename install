@@ -1,0 +1,53 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+git submodule init
+git submodule update 
+
+export PREFIX=${CONDA_PREFIX}
+export WORKDIR=${PWD}
+
+conda env config vars set PREFIX=${PREFIX} WORKDIR=${WORKDIR} CPATH=${PREFIX}/include
+
+cd ${PREFIX}
+
+git clone https://gitlab.cern.ch/hepmc/HepMC3.git
+cd HepMC3
+git checkout 7c7f4e5b1ffa5702787ca6c40ccc26f356bedb75
+cd ..
+mkdir hepmc3-build          
+cd hepmc3-build
+
+cmake -DHEPMC3_ENABLE_ROOTIO=ON -DROOT_DIR=${ROOTSYS} -DCMAKE_INSTALL_PREFIX=$PREFIX ../HepMC3
+make -j8 install
+
+cd $PREFIX
+
+wget https://pythia.org/download/pythia83/pythia8310.tgz
+tar xf pythia8310.tgz && rm pythia8310.tgz
+cd pythia8310
+./configure --prefix=${PREFIX} --with-hepmc3=${PREFIX}/HepMC3 --cxx-common='-std=c++17 -march=native -O3 -fPIC -pthread'
+make -j8 install
+
+
+export EIGEN3_ROOT="${PREFIX}/eigen3"          
+export PYTHIA8DIR="${PREFIX}/pythia8310"
+export PYTHIA8_ROOT_DIR="${PREFIX}/pythia8310"
+export HEPMC_DIR=${PREFIX}
+
+
+#5) Setup environment variables
+export SMASH_DIR="${XSCAPEDIR}/models/smash/"
+
+
+conda env config vars set SMASH_DIR=${SMASH_DIR} EIGEN3_ROOT=${EIGEN3_ROOT} PYTHIA8DIR=${PYTHIA8DIR} PYTHIA8_ROOT_DIR=${PYTHIA8_ROOT_DIR} HEPMC_DIR=${PREFIX}
+
+
+cd $WORKDIR
+cd models/smash
+mkdir build
+cd build
+cmake .. -DPythia_CONFIG_EXECUTABLE=$PREFIX/pythia8310/bin/pythia8-config -DCMAKE_INSTALL_PREFIX=$PREFIX
+make -j8
+make install
+
