@@ -37,7 +37,7 @@ export HEPMC_DIR=${PREFIX}
 
 
 #5) Setup environment variables
-export SMASH_DIR="${XSCAPEDIR}/models/smash/"
+export SMASH_DIR="${WORKDIR}/models/smash/"
 
 
 conda env config vars set SMASH_DIR=${SMASH_DIR} EIGEN3_ROOT=${EIGEN3_ROOT} PYTHIA8DIR=${PYTHIA8DIR} PYTHIA8_ROOT_DIR=${PYTHIA8_ROOT_DIR} HEPMC_DIR=${PREFIX}
