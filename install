@@ -9,6 +9,23 @@ export WORKDIR=${PWD}
 
 conda env config vars set PREFIX=${PREFIX} WORKDIR=${WORKDIR} CPATH=${PREFIX}/include
 
+
+cd $WORKDIR/models/trento
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX
+make -j8 install
+
+cd $WORKDIR/models/CCAKE
+
+mkdir -p EoS/Houston && \
+wget -O EoS/Houston/thermo.dat https://zenodo.org/record/6829115/files/thermo.dat?download=1 && \
+wget -O EoS/Houston/thermo.h5 https://zenodo.org/record/6829115/files/thermo.h5?download=1
+
+cd $WORKDIR/models/iS3D
+mkdir build && cd build
+cmake ..
+make -j8 install
+
 cd ${PREFIX}
 
 git clone https://gitlab.cern.ch/hepmc/HepMC3.git
@@ -39,9 +56,7 @@ export HEPMC_DIR=${PREFIX}
 #5) Setup environment variables
 export SMASH_DIR="${WORKDIR}/models/smash/"
 
-
 conda env config vars set SMASH_DIR=${SMASH_DIR} EIGEN3_ROOT=${EIGEN3_ROOT} PYTHIA8DIR=${PYTHIA8DIR} PYTHIA8_ROOT_DIR=${PYTHIA8_ROOT_DIR} HEPMC_DIR=${PREFIX}
-
 
 cd $WORKDIR
 cd models/smash
