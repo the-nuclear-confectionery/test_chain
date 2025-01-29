@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 set -euo pipefail
 
-git submodule init
+git submodule update --init --recursive
 git submodule update 
 
 export PREFIX=${CONDA_PREFIX}
@@ -112,3 +112,6 @@ cmake .. -DPythia_CONFIG_EXECUTABLE=$PREFIX/pythia8310/bin/pythia8-config -DCMAK
 make -j8
 make install
 
+cd $WORKDIR/scripts
+chmod 777 *
+cd $WORKDIR
