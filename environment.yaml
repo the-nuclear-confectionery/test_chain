@@ -21,6 +21,7 @@ dependencies:
   - gsl
   - cmake
   - eigen
+  - yaml-cpp
   
   # Boost (specific version)
   - boost=1.78.0
