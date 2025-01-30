@@ -11,6 +11,9 @@ date > ${OUTPUT}/event${ievt}.log
 
 #copy event to temp dir
 rsync -a ${WORKDIR}/configs ${TMP}/event${ievt}
+rsync -a ${WORKDIR}/models/CCAKE/EoS/Houston ${TMP}/event${ievt}
+
+sed -i "s|entropy-dict-dir = DUMMY|entropy-dict-dir = ${WORKDIR}/misc/PbPb_5020_sigma0d30_3M.dat|g" "${WORKDIR}/configs/trento_config.dat"
 
 cd ${TMP}/event${ievt}
 
@@ -23,13 +26,48 @@ GRID_STEP=$(grep "grid-step" "${WORKDIR}/configs/trento_config.dat" | awk -F'=' 
 echo "Grid Max: $GRID_MAX"
 echo "Grid Step: $GRID_STEP"
 
-python3 ${WORKDIR}/models/CCAKE/utilities/trento2ccake.py ${TMP}/event${ievt}/trento_ic/ic0.dat ${GRID_MAX} ${GRID_STEP} ${TMP}/event${ievt}/trento_ccake.dat 
+python3 ${WORKDIR}/models/CCAKE/utilities/trento2ccake.py ${TMP}/event${ievt}/trento_ic/ic0.dat ${GRID_STEP} ${GRID_MAX} ${TMP}/event${ievt}/trento_ccake.dat 
 
 
 sed -i "s|file: DUMMY|file: ${TMP}/event${ievt}/trento_ccake.dat|g" "${TMP}/event${ievt}/configs/input_parameters_ccake.yaml"
+sed -i "s|path: DUMMY|path: ${TMP}/event${ievt}/Houston/|g" "${TMP}/event${ievt}/configs/input_parameters_ccake.yaml"
+
 
 ${WORKDIR}/models/CCAKE/build/ccake ${TMP}/event${ievt}/configs/input_parameters_ccake.yaml ${TMP}/event${ievt}
 
+mkdir -p ${TMP}/event${ievt}/input
+mkdir -p ${TMP}/event${ievt}/results
+
+mv freeze_out.dat ${TMP}/event${ievt}/input/surface.dat
+
+cp ${WORKDIR}/models/iS3D/iS3D ${TMP}/event${ievt}
+cp ${TMP}/event${ievt}/configs/iS3D_parameters.dat ${TMP}/event${ievt}
+cp -rf ${WORKDIR}/models/iS3D/PDG ${TMP}/event${ievt}
+cp -rf ${WORKDIR}/models/iS3D/deltaf_coefficients ${TMP}/event${ievt}
+cp -rf${WORKDIR}/models/iS3D/generate_delta_f_coefficients ${TMP}/event${ievt}
+cp -rf ${WORKDIR}/models/iS3D/tables ${TMP}/event${ievt}
+
+cd ${TMP}/event${ievt}
+./iS3D
+
+rm -rf ${TMP}/event${ievt}/PDG
+rm -rf ${TMP}/event${ievt}/deltaf_coefficients
+rm -rf ${TMP}/event${ievt}/generate_delta_f_coefficients
+rm -rf ${TMP}/event${ievt}/tables
+rm -rf ${TMP}/event${ievt}/iS3D
+rm -rf ${TMP}/event${ievt}/input
+rm -rf ${TMP}/event${ievt}/iS3D_parameters.dat
+mv average_thermodynamic_quantities.dat ${TMP}/event${ievt}/results
+mv parameters.dat ${TMP}/event${ievt}/results
+
+
+smash -i ${TMP}/event${ievt}/configs/config.yaml \
+          -c "Modi: { List: { File_Directory: ${TMP}/event${ievt}/results } }" \
+          -o ${OUTPUT}
+
+rm -rf tabulations  
+#copy all configs 
+cp -rf ${WORKDIR}/configs ${OUTPUT}
 
 echo "Dir" >> ${OUTPUT}/event${ievt}.log
 echo pwd >> ${OUTPUT}/event${ievt}.log

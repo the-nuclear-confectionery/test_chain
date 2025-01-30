@@ -4,10 +4,10 @@
 #SBATCH --job-name="run_full_job"
 ##SBATCH --output="a.out.%j.%N.out"
 #SBATCH --partition=cpu
-##SBATCH --mem=3
+#SBATCH --mem=208G
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1  # could be 1 for py-torch
-#SBATCH --cpus-per-task=1   # spread out to use 1 core per NUMA, set to 64 if tasks is 1
+#SBATCH --ntasks-per-node=10
+#SBATCH --cpus-per-task=1  
 #SBATCH --no-requeue
 #SBATCH -t 08:00:00
 #SBATCH -e slurm-%j.err
@@ -29,6 +29,6 @@ export OMP_PLACES=threads
 
 mkdir -p ${WORKDIR}/run_tables
 
-# Loop through event numbers from EVTSTART to EVTEND
-parallel -j${SLURM_NTASKS} --workdir ${WORKDIR} --results ${LOG}-parallel \
-          srun -c ${SLURM_CPUS_PER_TASK} -n 1 ./scripts/run_ccake_chain.sh {} ::: $(seq $EVTSTART $EVTEND)
+# Adjusted parallel job submission
+seq $EVTSTART $EVTEND | parallel -j${NUMPROC} --workdir ${WORKDIR} --results ${LOG}-parallel \
+    ./scripts/run_ccake_chain.sh {}
