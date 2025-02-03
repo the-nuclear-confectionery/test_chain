@@ -35,16 +35,18 @@ sed -i "s|path: DUMMY|path: ${TMP}/event${ievt}/Houston/|g" "${TMP}/event${ievt}
 
 ${WORKDIR}/models/CCAKE/build/ccake ${TMP}/event${ievt}/configs/input_parameters_ccake.yaml ${TMP}/event${ievt}
 
+cd ${WORKDIR}
+
 mkdir -p ${TMP}/event${ievt}/input
 mkdir -p ${TMP}/event${ievt}/results
 
-mv freeze_out.dat ${TMP}/event${ievt}/input/surface.dat
+mv ${TMP}/event${ievt}/freeze_out.dat ${TMP}/event${ievt}/input/surface.dat
 
 cp ${WORKDIR}/models/iS3D/iS3D ${TMP}/event${ievt}
 cp ${TMP}/event${ievt}/configs/iS3D_parameters.dat ${TMP}/event${ievt}
 cp -rf ${WORKDIR}/models/iS3D/PDG ${TMP}/event${ievt}
 cp -rf ${WORKDIR}/models/iS3D/deltaf_coefficients ${TMP}/event${ievt}
-cp -rf${WORKDIR}/models/iS3D/generate_delta_f_coefficients ${TMP}/event${ievt}
+cp -rf ${WORKDIR}/models/iS3D/generate_delta_f_coefficients ${TMP}/event${ievt}
 cp -rf ${WORKDIR}/models/iS3D/tables ${TMP}/event${ievt}
 
 cd ${TMP}/event${ievt}
@@ -56,18 +58,18 @@ rm -rf ${TMP}/event${ievt}/generate_delta_f_coefficients
 rm -rf ${TMP}/event${ievt}/tables
 rm -rf ${TMP}/event${ievt}/iS3D
 rm -rf ${TMP}/event${ievt}/input
-rm -rf ${TMP}/event${ievt}/iS3D_parameters.dat
+
 mv average_thermodynamic_quantities.dat ${TMP}/event${ievt}/results
-mv parameters.dat ${TMP}/event${ievt}/results
+mv iS3D_parameters.dat ${TMP}/event${ievt}/results
 
 
 smash -i ${TMP}/event${ievt}/configs/config.yaml \
           -c "Modi: { List: { File_Directory: ${TMP}/event${ievt}/results } }" \
-          -o ${OUTPUT}
+          -o ${OUTPUT}/event${ievt}/
 
-rm -rf tabulations  
+rm -rf ${OUTPUT}/event${ievt}/tabulations  
 #copy all configs 
-cp -rf ${WORKDIR}/configs ${OUTPUT}
+cp -rf ${WORKDIR}/configs ${OUTPUT}/event${ievt}
 
 echo "Dir" >> ${OUTPUT}/event${ievt}.log
 echo pwd >> ${OUTPUT}/event${ievt}.log
