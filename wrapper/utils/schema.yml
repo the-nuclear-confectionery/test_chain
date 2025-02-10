@@ -1,0 +1,968 @@
+type: object
+required:
+  - global
+  - input
+additionalProperties: false  # Disallow extra fields at the root level
+properties:
+  global:
+    type: object
+    required:
+      - output
+      - tmp
+      - basedir
+      - nevents
+      - grid
+      - energy
+      - tau_hydro
+    additionalProperties: false  # Disallow extra fields under `global`
+    properties:
+      output:
+        type: string
+        description: "Global output directory path."
+      tmp:
+        type: string
+        description: "Temporary directory path."
+      basedir:
+        type: string
+        description: "Path to the tables directory."
+      nevents:
+        type: integer
+        minimum: 1
+        description: "Number of events to simulate."
+      grid:
+        type: object
+        required:
+          - x_max
+          - y_max
+          - eta_max
+          - step_x
+          - step_y
+          - step_eta
+        additionalProperties: false  # Disallow extra fields under `grid`
+        properties:
+          x_max:
+            type: number
+            description: "Grid maximum extent in x-direction."
+          y_max:
+            type: number
+            description: "Grid maximum extent in y-direction."
+          eta_max:
+            type: number
+            description: "Grid maximum extent in eta direction."
+          step_x:
+            type: number
+            description: "Grid step size in x-direction."
+          step_y:
+            type: number
+            description: "Grid step size in y-direction."
+          step_eta:
+            type: number
+            description: "Grid step size in eta direction."
+      energy:
+        type: object
+        required:
+          - value
+          - unit
+        additionalProperties: false  # Disallow extra fields under `energy`
+        properties:
+          value:
+            type: number
+            description: "Collision energy."
+          unit:
+            type: string
+            enum: [GeV, TeV]
+            description: "Unit of the collision energy."
+      tau_hydro:
+        type: number
+        description: "Time where hydrodynamics starts."
+        default: 1.0
+      ion_A:
+        type: string
+      ion_B:
+        type: string
+
+
+  input:
+    type: object
+    additionalProperties: false  # Disallow extra fields under `input`
+    properties:
+      initial_conditions:
+        type: object
+        additionalProperties: false  # Disallow extra fields under `initial_conditions`
+        properties:
+          type:
+            type: string
+            enum: [Trento]
+            description: "Type of initial conditions to be used (Trento)."
+          parameters:
+            type: object
+            required:
+              - ion_A
+              - ion_B
+            additionalProperties: false  # Disallow extra fields under `parameters`
+            properties:
+              ion_A:
+                type: object
+                additionalProperties: false  # Disallow extra fields under `ion_A`
+                properties:
+                  species:
+                    type: string
+                    enum: [p, d, Cu, Zr, Ru, Xe, Au, Pb, U]
+                    description: "Species of the first ion (e.g., Pb, Au)."
+              ion_B:
+                type: object
+                additionalProperties: false  # Disallow extra fields under `ion_B`
+                properties:
+                  species:
+                    type: string
+                    enum: [p, d, Cu, Zr, Ru, Xe, Au, Pb, U]
+                    description: "Species of the second ion (e.g., Pb, Au)."
+              
+              fluctuation:
+                type: number
+                default: 1.6
+                description: "Fluctuation parameter for TRENTo."
+
+              number-events:
+                type: integer
+                default: 1
+                description: "Number of events to be simulated in TRENTo."
+
+              entropy-dict-dir:
+                type: string
+                default: default
+                description: "Path to the entropy dictionary directory."
+
+              quiet:
+                type: boolean
+                default: false
+                description: "Suppress output if true."
+
+              no-header:
+                type: boolean
+                default: false
+                description: "Do not write headers to output files if true."
+
+              ncoll:
+                type: boolean
+                default: false
+                description: "Flag to include binary collisions in the output."
+
+              sparse-output:
+                type: boolean
+                default: true
+                description: "Use sparse output format for generated events."
+
+              output-format:
+                type: boolean
+                default: true
+                description: "Use HDF5 or both text and HDF5 formats for output."
+
+              reduced-thickness:
+                type: number
+                default: 0.0
+                description: "Reduced thickness parameter in TRENTo."
+
+              fluctuation-type:
+                type: string
+                default: Gamma
+                enum: [Gamma, LogNormal]
+                description: "Fluctuation distribution type (Gamma or LogNormal)."
+
+              nucleon-width:
+                type: number
+                default: 0.3
+                description: "Gaussian nucleon width."
+
+              nucleon-width-probability:
+                type: number
+                default: 0.0
+                description: "Probability for nucleon width distribution."
+
+              constit-width:
+                type: number
+                default: 0.3
+                description: "Gaussian constituent width."
+
+              constit-number:
+                type: integer
+                default: 1
+                description: "Number of constituents per nucleon."
+
+              nucleon-min-dist:
+                type: number
+                default: 0.0
+                description: "Minimum allowed distance between nucleons."
+
+              number-nucleons:
+                type: integer
+                default: 208
+                description: "Number of nucleons per ion (assuming Pb)."
+
+              woods-saxon-radius:
+                type: number
+                default: 5.09
+                description: "Woods-Saxon nuclear radius."
+
+              woods-saxon-thickness:
+                type: number
+                default: 0.46
+                description: "Woods-Saxon skin thickness."
+
+              woods-saxon-omega:
+                type: number
+                default: 0.0
+                description: "Woods-Saxon deformation parameter omega."
+
+              beta2:
+                type: number
+                default: 0.0
+                description: "Deformation parameter beta2."
+
+              beta3:
+                type: number
+                default: 0.0
+                description: "Deformation parameter beta3."
+
+              beta4:
+                type: number
+                default: 0.0
+                description: "Deformation parameter beta4."
+
+              cross-section:
+                type: number
+                default: 7.0
+                description: "Inelastic nucleon-nucleon cross-section in fm²."
+
+              normalization:
+                type: number
+                default: 1.0
+                description: "Normalization factor for entropy deposition."
+
+              b-min:
+                type: number
+                default: 0.0
+                description: "Minimum impact parameter in fm."
+
+              b-max:
+                type: number
+                default: -1.0
+                description: "Maximum impact parameter (-1 means auto-detect)."
+
+              centrality-min:
+                type: number
+                default: -10.0
+                description: "Minimum centrality percentage."
+
+              centrality-max:
+                type: number
+                default: -100.0
+                description: "Maximum centrality percentage."
+              
+              seed:
+                anyOf:
+                  - type: string
+                  - type: integer
+                default: "random"
+                description: "Accepts 'random' or an integer value as the random seed."
+      overlay:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [ICCING]
+          parameters:
+            type: object
+            additionalProperties: false
+            properties:
+              seed:
+                anyOf:
+                  - type: string
+                  - type: integer
+                default: "random"
+                description: "Seed for ICCING."
+              input_type:
+                type: string
+                enum: [sparse, full]
+                default: sparse
+                description: "Sparse or full input type."
+              output_type:
+                type: string
+                enum: [sparse, full]
+                default: sparse
+                description: "Sparse or full output type."
+              density_profile_type:
+                type: string
+                enum: [Gaussian, Kernel]
+                default: Kernel
+                description: "Density profile type."
+              dipole_model:
+                type: string
+                enum: [GBW, MV]
+                default: GBW
+                description: "Dipole model (GBW or MV)."
+              charge_type:
+                type: string
+                enum: [BSQ, UDS]
+                default: BSQ
+                description: "Charge type (BSQ or UDS)."
+              eccentricity_type:
+                type: string
+                default: COM
+                description: "Eccentricity type."
+              greens_evolution:
+                type: boolean
+                default: false
+                description: "Enable or disable greens evolution."
+              t_a:
+                type: boolean
+                default: false
+                description: "Flag to include t_a contribution."
+              t_b:
+                type: boolean
+                default: true
+                description: "Flag to include t_b contribution."
+              trento_normalization: 
+                type: number
+                default: 1
+                description: "Normalization factor for TRENTo."
+              alpha_s:
+                type: number
+                default: 0.3
+                description: "Strong coupling constant alpha_s."
+              kappa:
+                type: integer
+                default: 1
+                description: "Kappa parameter in GeV."
+              gluon_radius:
+                type: number
+                default: 0.5
+                description: "Gluon radius in fm."
+              quark_radius:
+                type: number
+                default: 1.0
+                description: "Quark radius in fm."
+              r_max:
+                type: integer
+                default: 1
+                description: "Maximum r value in fm."
+              alpha_min:
+                type: number
+                default: 0.01
+                description: "Minimum alpha value."
+              s_chop:
+                type: number
+                default: 1.0e-19
+                description: "Chopping threshold for s in fm^-3."
+              e_thresh:
+                type: number
+                default: 0.25
+                description: "Energy threshold in GeV/fm^3."
+              lambda:
+                type: integer
+                default: 1
+                description: "Lambda parameter."
+              lambda_bym:
+                type: number
+                default: 0.001
+                description: "Lambda/m parameter."
+              perturbative_regime:
+                type: number
+                default: 0.0
+                description: "Perturbative regime parameter."
+              background_points:
+                type: integer
+                default: 10146
+                description: "Number of background points."
+              greens_functions_points:
+                type: integer
+                default: 128
+                description: "Number of Greens function points."
+              greens_functions_chunks:
+                type: integer
+                default: 400
+                description: "Number of Greens function chunks."
+              c_infinity:
+                type: number
+                default: 0.8846609
+                description: "Value of c_infinity."
+              eta_over_s:
+                type: number
+                default: 0.047
+                description: "Viscosity over entropy ratio."
+              paths:
+                type: object
+                properties:
+                  trento_results_directory:
+                    type: string
+                    default: default
+                    description: "Directory containing TRENTo results."
+                  EoS:
+                    type: string
+                    default: default
+                    description: "Path to the equation of state (EoS) file."
+                  background_attractor:
+                    type: string
+                    default: default
+                    description: "Path to the background attractor file."
+                  executable_directory:
+                    type: string
+                    default: default
+                    description: "Path to the directory containing the ICCING executable."
+                  greens_functions:
+                    type: string
+                    default: default
+                    description: "Path to the Greens functions file."
+                  quark_chemistry:
+                    type: string
+                    default: default
+                    description: "Path to the quark chemistry file."
+                  results_directory:
+                    type: string
+                    default: default
+                    description: "Directory where ICCING results will be stored."
+      hydrodynamics:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [CCAKE]
+        properties:
+          initial_conditions:
+            type: object
+            additionalProperties: false
+            properties:
+              type:
+                type: string
+                enum: [ccake, iccing, default]
+                default: default
+                description: "Type of initial conditions to be used (ccake, iccing)."
+              file:
+                type: string
+                default: default
+                description: "Path to the initial conditions file."
+              dimension:
+                type: integer
+                enum: [1, 2, 3]
+                default: 2
+                description: "Spatial dimension of the simulation."
+              input_as_entropy:
+                type: boolean
+                default: false
+                description: "Interpret input as entropy density if true."
+
+          parameters:
+            type: object
+            required:
+              - dt
+              - h_T
+              - kernel_type
+              - energy_cutoff
+            additionalProperties: false
+            properties:
+              dt:
+                type: number
+                default: 0.05
+                description: "Time step of the simulation in fm/c."
+              h_T:
+                type: number
+                default: 0.5
+                description: "Smoothing parameter in the transverse direction (in fm)."
+              h_eta:
+                type: number
+                default: 0.5
+                description: "Smoothing parameter in the longitudinal direction."
+              rk_order:
+                type: integer
+                default: 2
+                description: "Order of the Runge-Kutta integrator."
+              kernel_type:
+                type: string
+                enum: [cubic_spline]
+                default: cubic_spline
+                description: "Kernel type for smoothing."
+              energy_cutoff:
+                type: number
+                default: 0.15
+                description: "Energy threshold (GeV/fm³) below which particles are deleted."
+              buffer_particles:
+                type: object
+                additionalProperties: false
+                properties:
+                  enabled:
+                    type: boolean
+                    default: false
+                    description: "Enable or disable buffer particles."
+                  circular:
+                    type: boolean
+                    default: false
+                    description: "Use circular grid padding if true."
+                  padding_thickness:
+                    type: number
+                    default: 0.1
+                    description: "Fractional padding thickness for circular buffering."
+
+          eos:
+            type: object
+            required:
+              - type
+            properties:
+              type:
+                type: string
+                enum: [table, tanh_conformal, conformal, conformal_diagonal]
+                default: table
+                description: "Equation of state (EoS) type."
+              path:
+                type: string
+                default: default
+                description: "Path to the EoS file (required if `type` is 'table')."
+
+          particlization:
+            type: object
+            properties:
+              enabled:
+                type: boolean
+                default: true
+                description: "Enable or disable particlization output."
+              type:
+                type: string
+                enum: [fixed_T]
+                default: fixed_T
+                description: "Type of particlization."
+              T:
+                type: number
+                default: 150.0
+                description: "Particlization temperature (in MeV)."
+
+          hydro:
+            type: object
+            properties:
+              baryon_charge_enabled:
+                type: boolean
+                default: false
+                description: "Enable baryon charge evolution."
+              strange_charge_enabled:
+                type: boolean
+                default: false
+                description: "Enable strange charge evolution."
+              electric_charge_enabled:
+                type: boolean
+                default: false
+                description: "Enable electric charge evolution."
+              viscous_parameters:
+                type: object
+                properties:
+                  shear:
+                    type: object
+                    properties:
+                      mode:
+                        type: string
+                        enum: [constant, disabled]
+                        default: constant
+                        description: "Shear viscosity mode."
+                      constant_eta_over_s:
+                        type: number
+                        default: 0.
+                        description: "Constant shear viscosity value."
+                      relaxation_mode:
+                        type: string
+                        enum: [default, gubser]
+                        default: default
+                        description: "Shear relaxation coefficient mode."
+                  bulk:
+                    type: object
+                    properties:
+                      mode:
+                        type: string
+                        enum: [constant]
+                        default: constant
+                        description: "Bulk viscosity mode."
+                      constant_zeta_over_s:
+                        type: number
+                        default: 0.
+                        description: "Constant bulk viscosity value."
+                      cs2_dependent_zeta_A:
+                        type: number
+                        default: 1.67552
+                        description: "Zeta coefficient A."
+                      cs2_dependent_zeta_p:
+                        type: number
+                        default: 2.
+                        description: "Zeta coefficient power term."
+                      relaxation_mode:
+                        type: string
+                        enum: [default]
+                        default: default
+                        description: "Bulk relaxation coefficient mode."
+                      modulate_with_tanh:
+                        type: boolean
+                        default: false
+                        description: "Use tanh modulation for bulk viscosity."
+
+          output:
+            type: object
+            properties:
+              print_conservation_state:
+                type: boolean
+                default: false
+                description: "Print conservation state to output."
+              hdf_evolution:
+                type: boolean
+                default: false
+                description: "Output evolution data in HDF format."
+              txt_evolution:
+                type: boolean
+                default: true
+                description: "Output evolution data in TXT format."
+
+      particlization:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [is3d]
+          parameters:
+            type: object
+            additionalProperties: false
+            properties:
+              operation:
+                type: integer
+                description: "Operation mode to run the sampler or distribution generator."
+                enum: [0, 1, 2]
+                default: 2
+              mode:
+                anyOf:
+                  - type: string
+                    enum: ["default"]
+                  - type: integer
+                    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                default: "default"
+                description: " # 0: reads freezeout file from 3+1D viscous hydro (old gpu-vh format)
+				                       # 1: reads freezeout file from 3+1D viscous hydro (gpu-vh format)
+					                     # 2: reads freezeout file from 3+1D viscous anisotropic hydro (PL matching)
+					                     # 3: reads freezeout file from 3+1D viscous anisotropic hydro (PL,PT matching)
+					                     # 4: reads freezeout file from 2+1D viscous hydro (old MUSIC boost invariant format)
+					                     # 5: reads freezeout file from 3+1D viscous hydro with thermal vorticity terms (gpu-vh format)
+					                     # 6: reads freezeout file from 2+1D viscous hydro (new public MUSIC boost invariant format)
+					                     # 7: reads freezeout file from 2+1D viscous hydro (hic-eventgen format)
+					                     # 8: reads freezeout file from 2+1D viscous hydro (CCAKE)
+					                     # 9: reads freezeout file from 3+1D viscous hydro (CCAKE)
+					                     #10: reads freezeout file from 2+1D viscous hydro (CCAKE v1)"
+
+
+              hrg_eos:
+                type: integer
+                description: "Selects the HRG equation of state."
+                enum: [1, 2, 3]
+                default: 2
+                description: "  # 1: urqmd
+                                # 2: smash
+                                # 3: smash_box"
+
+              set_FO_temperature:
+                type: integer
+                description: "Whether to override freezeout temperature in the surface file."
+                enum: [0, 1]
+                default: 0
+
+              T_switch:
+                type: number
+                description: "Override freezeout temperature if set_FO_temperature is enabled."
+                default: 0.150
+
+              dimension:
+                type: integer
+                description: "Dimensionality of the freezeout surface."
+                enum: [2, 3]
+                default: 2
+
+              df_mode:
+                type: integer
+                description: "Mode for type of delta-f correction."
+                default: 8
+
+              include_baryon:
+                type: integer
+                description: "Include baryon chemical potential in distribution function."
+                default: 1
+
+              include_bulk_deltaf:
+                type: integer
+                description: "Include bulk delta-f correction."
+                default: 0
+
+              include_shear_deltaf:
+                type: integer
+                description: "Include shear delta-f correction."
+                default: 1
+
+              include_baryondiff_deltaf:
+                type: integer
+                description: "Include baryon diffusion delta-f correction."
+                default: 0
+
+              regulate_deltaf:
+                type: integer
+                description: "Force |delta_f| < f_eq for VH and |delta_f~| < f_a for VAH."
+                default: 1
+
+              outflow:
+                type: integer
+                description: "Include Theta(p.dsigma) in smooth CFF."
+                default: 1
+
+              deta_min:
+                type: number
+                description: "Minimum value of detA for feqmod breakdown."
+                default: 1.0e-5
+
+              group_particles:
+                type: integer
+                description: "Group particles with similar mass to speed up calculations."
+                default: 0
+
+              particle_diff_tolerance:
+                type: number
+                description: "Grouping particle mass tolerance."
+                default: 0.01
+
+              mass_pion0:
+                type: number
+                description: "Lightest pion mass (GeV) for feqmod breakdown criteria."
+                default: 0.180
+
+              do_resonance_decays:
+                type: integer
+                description: "Switch for resonance decays after thermal spectra calculation."
+                default: 0
+
+              lightest_particle:
+                type: integer
+                description: "PDG MC ID of lightest particle for resonance decay feed-down."
+                default: 111
+
+              oversample:
+                type: integer
+                description: "Run sampler iteratively until minimum number of hadrons sampled."
+                default: 1
+
+              min_num_hadrons:
+                type: number
+                description: "Minimum number of hadrons to be sampled across all samples."
+                default: 1.0e+8
+
+              max_num_samples:
+                type: integer
+                description: "Maximum number of samples for oversampling."
+                default: 1
+
+              fast:
+                type: integer
+                description: "Run sampler in fast mode assuming (T, muB) throughout the surface are close to their averages."
+                default: 0
+
+              y_cut:
+                type: number
+                description: "Rapidity cut: |y| <= y_cut."
+                default: 5.0
+              seed:
+                anyOf:
+                  - type: string
+                  - type: integer
+                default: "random"
+                description: "Accepts 'random' or an integer value as the random seed."
+
+              test_sampler:
+                type: integer
+                description: "Perform sampler test only (write sampled pT spectra and v_n to a file)."
+                default: 0
+
+              pT_lower_cut:
+                type: number
+                description: "Lower cut-off for pT in GeV (used for sampler tests)."
+                default: 0.0
+
+              pT_upper_cut:
+                type: number
+                description: "Upper cut-off for pT in GeV (used for sampler tests)."
+                default: 3.0
+
+              pT_bins:
+                type: integer
+                description: "Number of pT bins (used for sampler tests)."
+                default: 100
+
+              y_bins:
+                type: integer
+                description: "Number of rapidity bins."
+                default: 50
+
+              eta_cut:
+                type: number
+                description: "Pseudo-rapidity cut: |eta| <= eta_cut."
+                default: 7.0
+
+              eta_bins:
+                type: integer
+                description: "Number of eta bins."
+                default: 70
+
+              tau_min:
+                type: number
+                description: "Minimum tau value (fm) for sampled dN/dtaudy test."
+                default: 0.0
+
+              tau_max:
+                type: number
+                description: "Maximum tau value (fm) for sampled dN/dtaudy test."
+                default: 12.0
+
+              tau_bins:
+                type: integer
+                description: "Number of tau bins for sampled dN/dtaudy test."
+                default: 120
+
+              r_min:
+                type: number
+                description: "Minimum radius (fm) for sampled dN/drdy test."
+                default: 0.0
+
+              r_max:
+                type: number
+                description: "Maximum radius (fm) for sampled dN/drdy test."
+                default: 12.0
+
+              r_bins:
+                type: integer
+                description: "Number of radius bins for sampled dN/drdy test."
+                default: 60
+                
+              input_file:
+                type: string
+                default: default
+                description: "Path to the input file containing freezeout surface data."
+      afterburner:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [smash]
+          parameters:
+            type: object
+            properties:
+              decays_only:
+                type: boolean
+                default: false
+                description: "If true, only decays are performed without rescattering."
+              input_file:
+                type: string
+                default: default
+                description: "Path to the input file containing freezeout surface data."
+              Logging:
+                type: object
+                properties:
+                  default:
+                    type: string
+                    enum: [DEBUG, INFO, WARN, ERROR]
+                    description: "Logging level for the simulation."
+                    default: INFO
+
+              General:
+                type: object
+                properties:
+                  Modus:
+                    type: string
+                    enum: [List]
+                    description: "Simulation mode (List, etc.)."
+                    default: List
+                  Time_Step_Mode:
+                    type: string
+                    enum: [Fixed]
+                    description: "Time step control mode."
+                    default: Fixed
+                  Delta_Time:
+                    type: number
+                    default: 1.0
+                    description: "Fixed time step value in fm/c."
+                  End_Time:
+                    type: number
+                    default: 1000.0
+                    description: "End time of the simulation in fm/c."
+                  seed:
+                    anyOf:
+                      - type: string
+                      - type: integer
+                    default: random
+                    description: "Seed for random number generation. Negative for random."
+                  Nevents:
+                    type: integer
+                    minimum: 1
+                    default: 1
+                    description: "Number of events to simulate."
+
+              Output:
+                type: object
+                properties:
+                  Output_Interval:
+                    type: number
+                    default: 1000.0
+                    description: "Interval for writing output."
+                  Particles:
+                    type: object
+                    properties:
+                      Format:
+                        type: array
+                        items:
+                          type: string
+                          enum: ["Oscar2013", "HepMC_treeroot"]
+                        default: ["Oscar2013", "HepMC_treeroot"]
+                        description: "List of output formats for particle data."
+
+              Collision_Term:
+                type: object
+                properties:
+                  No_Collisions:
+                    type: boolean
+                    default: false
+                    description: "Disable particle collisions."
+                  Force_Decays_At_End:
+                    type: boolean
+                    default: false
+                    description: "Force particle decays at the end of simulation."
+
+              Modi:
+                type: object
+                properties:
+                  List:
+                    type: object
+                    properties:
+                      File_Directory:
+                        type: string
+                        default: "../input/list"
+                        description: "Directory containing the input particle list."
+                      Filename:
+                        type: string
+                        default: "particle_list_osc.dat"
+                        description: "Input file containing initial particle list."
+      
+      analysis:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [hepmc3]
+          parameters:
+            type: object
+            properties:
+              input_file:
+                type: string
+                default: default
+                description: "Path to the input file containing freezeout surface data."
+              output_file:
+                type: string
+                default: default
+                description: "Path to the output file for analysis results."
+              rapidity_cut:
+                type: number
+                default: 0.5
+                description: "Rapidity cut for particle selection."

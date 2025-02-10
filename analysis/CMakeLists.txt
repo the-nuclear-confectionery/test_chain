@@ -32,13 +32,15 @@ include_directories(SYSTEM ${ROOT_INCLUDE_DIRS} ${SMASH_INCLUDE_DIR} ${CUBA_INCL
 # Add the executable
 add_executable(spectra_hepmc3.exe ${CMAKE_CURRENT_SOURCE_DIR}/spectra_hepmc3.cxx)
 
-# Link SMASH and other required libraries
+# Link SMASH and other libraries with rpath
 target_link_libraries(spectra_hepmc3.exe
     ${ROOT_LIBRARIES}
     ${HEPMC3_ROOTIO_LIB}
+    -Wl,-rpath,${SMASH_LIB_DIR}  # Embed runtime path for SMASH
     -L${SMASH_LIB_DIR} -lsmash
     -lHepMC3 -lHepMC3rootIO
 )
+
 
 
 # Endianness detection

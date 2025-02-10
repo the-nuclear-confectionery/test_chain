@@ -81,6 +81,9 @@ mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX
 make -j8 install
 
+cd $WORKDIR/models/ICCING
+make -j8
+
 cd $WORKDIR/models/CCAKE
 
 mkdir -p EoS/Houston && \
@@ -88,6 +91,8 @@ wget -O EoS/Houston/thermo.dat https://zenodo.org/record/6829115/files/thermo.da
 wget -O EoS/Houston/thermo.h5 https://zenodo.org/record/6829115/files/thermo.h5?download=1
 
 mkdir build && cd build
+#copy EoS to build directory
+cp -r EoS $WORKDIR/models/CCAKE/build
 cmake ..
 make -j8
 
@@ -110,6 +115,32 @@ cd build
 cmake .. -DPythia_CONFIG_EXECUTABLE=$PREFIX/pythia8310/bin/pythia8-config -DCMAKE_INSTALL_PREFIX=$PREFIX
 make -j8
 make install
+
+
+# build analysis
+cd $WORKDIR/analysis
+mkdir build && cd build
+cmake ..
+make -j8
+
+
+#build tables directory
+cd $WORKDIR
+mkdir -p tables
+mkdir -p tables/ICCING
+mkdir -p tables/iS3D
+
+cp -rf $WORKDIR/models/CCAKE/EoS/Houston/* tables
+
+cp -rf $WORKDIR/models/ICCING/Input/*.dat tables/ICCING/
+cp -rf $WORKDIR/models/ICCING/Input/*.txt tables/ICCING/
+cp -rf $WORKDIR/models/ICCING/Greens_Function/*.txt tables/ICCING/
+
+
+cp -rf $WORKDIR/models/iS3D/tables tables/iS3D
+cp -rf $WORKDIR/models/iS3D/PDG tables/iS3D
+cp -rf $WORKDIR/models/iS3D/deltaf_coefficients tables/iS3D
+
 
 cd $WORKDIR/scripts
 chmod 777 *

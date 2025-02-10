@@ -1,0 +1,9 @@
+tmp/*
+tmp
+results/*
+results
+tables
+tables/*
+*.pyc
+*.db
+analysis/build
