@@ -1,6 +1,7 @@
 from utils.input_file import InputFile
 from specializations.trento_initial_condition import TrentoInitialCondition
 from specializations.ICCING_overlay import ICCINGOverlay
+from specializations.freestreaming_preequilibrium import Freestreaming
 from specializations.ccake_hydro import CCAKEHydro
 from specializations.is3d_particlization import iS3DParticlization
 from specializations.smash_afterburner import SMASHAfterburner
@@ -10,12 +11,13 @@ from specializations.amptgenesis_overlay import AmptGenesisOverlay
 from specializations.none_hydro import NoneHydro
 from specializations.none_initial_condition import NoneInitialCondition
 from specializations.none_overlay import NoneOverlay
+from specializations.none_preequilibrium import NonePreequilibrium
 from specializations.none_particlization import NoneParticlization
 from specializations.none_afterburner import NoneAfterburner
 from specializations.none_analysis import NoneAnalysis
 from utils.validate_collision_system import CollisionSystem
 from utils.db import initialize_database, insert_event, update_event_centrality_estimator, update_ic_type, update_overlay_type\
-                    , update_hydro_type, update_particlization_type, update_afterburner_type, update_analysis_type
+                    , update_hydro_type, update_particlization_type, update_afterburner_type, update_analysis_type, update_preequilibrium_type
 import argparse
 import os
 import shutil
@@ -89,6 +91,19 @@ def main():
     overlay_stage.validate(args.event_id)
     overlay_stage.run(args.event_id)
     update_overlay_type(db_connection, args.event_id, overlay_type)
+
+    # Detect preequilibrium automatically
+    preequilibrium_type = config['input'].get('preequilibrium', {}).get('type', 'none').lower()
+    if preequilibrium_type == 'freestreaming':
+        preequilibrium_stage = Freestreaming(config, db_connection)
+    elif preequilibrium_type == 'none':
+        preequilibrium_stage = NonePreequilibrium(config, db_connection)
+        config['input']['preequilibrium']['type'] = None
+    else:
+        raise ValueError(f"Unknown preequilibrium type: {preequilibrium_type}")
+    preequilibrium_stage.validate(args.event_id)
+    preequilibrium_stage.run(args.event_id)
+    update_preequilibrium_type(db_connection, args.event_id, preequilibrium_type)
 
     hydro_type = config['input'].get('hydrodynamics', {}).get('type', 'none').lower()
     if hydro_type == 'ccake':

@@ -734,6 +734,13 @@ properties:
                           default: 2.0
                           description: "Normalization factor for smearing."
 
+      preequilibrium:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [freestreaming]
+        
       hydrodynamics:
         type: object
         properties:

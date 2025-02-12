@@ -100,6 +100,10 @@ mkdir build && cd build
 cmake ..
 make -j8
 
+#copy freestream to wrapper
+cp -rf $WORKDIR/models/freestream/freestream.py $WORKDIR/wrapper/external_packages 
+
+
 cd $WORKDIR/models/CCAKE
 
 mkdir -p EoS/Houston && \

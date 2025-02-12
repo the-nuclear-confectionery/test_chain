@@ -20,3 +20,6 @@
 [submodule "models/AMPTGenesis"]
 	path = models/AMPTGenesis
 	url = git@github.com:USPHydro/AMPTGenesis.git
+[submodule "models/freestream"]
+	path = models/freestream
+	url = git@github.com:Duke-QCD/freestream.git

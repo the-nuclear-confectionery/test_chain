@@ -57,6 +57,10 @@ class TrentoInitialCondition(InitialCondition):
         output_dir = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento')
         os.makedirs(output_dir, exist_ok=True)
 
+        #check for freeestreaming
+        if self.config['input']['preequilibrium']['type'] == 'freestreaming':
+            output_dir = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', 'ic.hdf')
+
         config_dir = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'configs')
         os.makedirs(config_dir, exist_ok=True)
 
@@ -129,12 +133,15 @@ class TrentoInitialCondition(InitialCondition):
         #convert to ccake format
         ccake_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'ccake_ic.dat')
         sparse_output = False
-        if self.config['input']['initial_conditions']['parameters']['sparse-output'] == True:
-            sparse_output = True
-            trento_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'ic0.dat')
-        else:
-            trento_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'0.dat')
-        self.convert_to_ccake( trento_ic_path,ccake_ic_path, sparse_output)
+        #check for freestreaming
+        if self.config['input']['preequilibrium']['type'] != 'freestreaming':
+            if self.config['input']['initial_conditions']['parameters']['sparse-output'] == True:
+                sparse_output = True
+                trento_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'ic0.dat')
+                
+            else:
+                trento_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'0.dat')
+            self.convert_to_ccake( trento_ic_path,ccake_ic_path, sparse_output)
 
     def parse_output(self, output_file):
         """Parse the output file to extract entropy and eccentricity information."""

@@ -34,6 +34,9 @@ class ICCINGOverlay(Overlay):
                 if self.config['input']['overlay']['parameters']['output_type'] != 'sparse':
                     print("Warning: Initial condition output type is sparse, but overlay output type is not. Setting overlay output type to sparse.")
                     self.config['input']['overlay']['parameters']['output_type'] = 'sparse'
+            #set normalization to one, if not set
+            if self.config['input']['initial_conditions']['parameters']['normalization'] != 1.:
+                raise ValueError("Trento normalization must be 1.0 for ICCING overlay.")
         else:
             if self.config['input']['overlay']['parameters']['paths']['trento_results_directory'] == 'default':
                 raise ValueError("trento_results_directory is set to default, but no Trento module is enabled, path to trento results directory must be provided.")
@@ -42,6 +45,9 @@ class ICCINGOverlay(Overlay):
         if self.config['input']['overlay']['parameters']['input_type'] != 'sparse':
             print("Warning: Overlay input type is not sparse, setting it to sparse.")
             self.config['input']['overlay']['parameters']['input_type'] = 'sparse'
+        
+        if self.config['input']['preequilibrium']['type'] != None:
+            raise ValueError("Preequilibrium type must be 'none' when using ICCING overlay.")
 
 
         print("Validation of ICCING overlay configuration completed successfully.")

@@ -35,6 +35,13 @@ class CCAKEHydro(Hydrodynamics):
                         os.path.join(self.config['global']['output'], f"event_{event_id}", 'iccing', 'densities0.dat')
                     #set IC type in CCAKE to 'ICCING'
                     self.config['input']['hydrodynamics']['initial_conditions']['type'] = 'ICCING'
+                elif self.config['input']['preequilibrium']['type'] == 'freestreaming':
+                    #check if file is set
+                    print("Reading freestreaming file")
+                    self.config['input']['hydrodynamics']['initial_conditions']['file'] = \
+                        os.path.join(self.config['global']['output'], f"event_{event_id}", 'freestream', 'fs.dat')
+
+                    self.config['input']['hydrodynamics']['initial_conditions']['type'] = 'ccake'
                 else:
                     #file is the default output of trento
                     self.config['input']['hydrodynamics']['initial_conditions']['file'] = \
@@ -53,10 +60,13 @@ class CCAKEHydro(Hydrodynamics):
                 #set IC type in CCAKE to 'AMPT'
                 self.config['input']['hydrodynamics']['initial_conditions']['type'] = 'ccake'
             
-            #check for none initial conditions or overlay
-            if self.config['input']['initial_conditions']['type'] == None and self.config['input']['overlay']['type'] == None:
+            #check for none initial conditions or overlay or preequilibrium
+            if self.config['input']['initial_conditions']['type'] == None and self.config['input']['overlay']['type'] == None and self.config['input']['preequilibrium']['type'] == None:
                 #error 
                 raise ValueError("No initial conditions or overlay specified, so initial condition file amd IC type must be specified.")  
+            #check for freestreaming preequilibrium
+
+
         else:
             #check if ic type is set. It should always be set if the file is not default
             if self.config['input']['hydrodynamics']['initial_conditions']['type'] == 'default':

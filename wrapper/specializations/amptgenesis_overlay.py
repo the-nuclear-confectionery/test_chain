@@ -32,7 +32,9 @@ class AmptGenesisOverlay(Overlay):
         #set default output path
         if self.config['input']['overlay']['parameters']['paths']['output'] == "default":
             self.config['input']['overlay']['parameters']['paths']['output'] = os.path.join(self.config['global']['output'], f"event_{event_id}", 'amptgenesis','amptgenesis.dat')
-
+            
+        if self.config['input']['preequilibrium']['type'] != None:
+                        raise ValueError("Preequilibrium type must be 'none' when using AMPTGenesis overlay.")
     def create_amptgenesis_config(self, event_id):
         """
         Create an AMPTGenesis configuration file using YAML-provided parameters.

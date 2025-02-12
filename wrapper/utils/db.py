@@ -13,6 +13,7 @@ def initialize_database(db_path):
         output_path TEXT,
         ic_type TEXT,
         overlay_type TEXT,
+        preequilibrium_type TEXT,
         hydro_type TEXT,
         particlization_type TEXT,
         afterburner_type TEXT,
@@ -46,6 +47,17 @@ def initialize_database(db_path):
         eps4 REAL,
         eps5 REAL,
         overlay_type TEXT,
+        FOREIGN KEY(event_id) REFERENCES events(event_id)
+    )
+    ''')
+    
+    # Create preequilibrium table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS preequilibrium (
+        event_id INTEGER PRIMARY KEY,
+        seed INTEGER,
+        time REAL,
+        preequilibrium_type TEXT,
         FOREIGN KEY(event_id) REFERENCES events(event_id)
     )
     ''')
@@ -147,6 +159,14 @@ def insert_overlay(connection, event_id, seed, eps2, eps3, eps4, eps5, overlay_t
     ''', (event_id, seed, eps2, eps3, eps4, eps5, overlay_type))
     connection.commit()
 
+def insert_preequilibrium(connection, event_id, seed,time , preequilibrium_type):
+    cursor = connection.cursor()
+    cursor.execute('''
+    INSERT OR REPLACE INTO preequilibrium (event_id, seed, time, preequilibrium_type)
+    VALUES (?, ?, ?, ?)
+    ''', (event_id, seed, time, preequilibrium_type))
+    connection.commit()
+                          
 def insert_hydro(connection, event_id, hydro_type, dimensions):
     cursor = connection.cursor()
     cursor.execute('''
@@ -198,6 +218,13 @@ def update_overlay_type(connection, event_id, overlay_type):
     cursor.execute('''
     UPDATE events SET overlay_type = ? WHERE event_id = ?
     ''', (overlay_type, event_id))
+    connection.commit()
+
+def update_preequilibrium_type(connection, event_id, preequilibrium_type):
+    cursor = connection.cursor()
+    cursor.execute('''
+    UPDATE events SET preequilibrium_type = ? WHERE event_id = ?
+    ''', (preequilibrium_type, event_id))
     connection.commit()
 
 def update_hydro_type(connection, event_id, hydro_type):
