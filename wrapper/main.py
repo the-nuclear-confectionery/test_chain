@@ -5,6 +5,8 @@ from specializations.ccake_hydro import CCAKEHydro
 from specializations.is3d_particlization import iS3DParticlization
 from specializations.smash_afterburner import SMASHAfterburner
 from specializations.hepmc3_analysis import HepMC3Analysis
+from specializations.ampt_initial_condition import AmptInitialCondition
+from specializations.amptgenesis_overlay import AmptGenesisOverlay
 from specializations.none_hydro import NoneHydro
 from specializations.none_initial_condition import NoneInitialCondition
 from specializations.none_overlay import NoneOverlay
@@ -12,14 +14,14 @@ from specializations.none_particlization import NoneParticlization
 from specializations.none_afterburner import NoneAfterburner
 from specializations.none_analysis import NoneAnalysis
 from utils.validate_collision_system import CollisionSystem
-from utils.db import initialize_database, insert_event, update_event_entropy, update_ic_type, update_overlay_type\
+from utils.db import initialize_database, insert_event, update_event_centrality_estimator, update_ic_type, update_overlay_type\
                     , update_hydro_type, update_particlization_type, update_afterburner_type, update_analysis_type
 import argparse
 import os
 import shutil
 
 def main():
-    entropy = None
+    centrality_estimator = None
 
     parser = argparse.ArgumentParser(description="Run initial condition generation and overlay for a specific event.")
     parser.add_argument('event_id', type=int, help="Event ID to run.")
@@ -42,7 +44,7 @@ def main():
 
     collision_system = CollisionSystem(config, db_connection)
     collision_id = collision_system.insert_collision_system()
-    # Insert event (without entropy yet)
+    # Insert event (without centrality_estimator yet)
     insert_event(
         db_connection,
         args.event_id,
@@ -56,6 +58,8 @@ def main():
 
     if ic_type == 'trento':
         initial_condition = TrentoInitialCondition(config, db_connection)
+    elif ic_type == 'ampt':
+        initial_condition = AmptInitialCondition(config, db_connection)
     elif ic_type == 'none':
         initial_condition = NoneInitialCondition(config, db_connection)
         config['input']['initial_conditions']['type'] = None
@@ -65,13 +69,16 @@ def main():
     initial_condition.validate()
     initial_condition.run(args.event_id)
     update_ic_type(db_connection, args.event_id, ic_type)
-    entropy = initial_condition.get_entropy()
+    centrality_estimator = initial_condition.get_centrality_estimator()
     # Detect overlay automatically
     overlay_type = config['input'].get('overlay', {}).get('type', 'none').lower()
 
     if overlay_type == 'iccing':
         overlay_stage = ICCINGOverlay(config, db_connection)
-        entropy = initial_condition.get_entropy()
+        #centrality_estimator = initial_condition.get_centrality_estimator()
+    elif overlay_type == 'amptgenesis':
+        overlay_stage = AmptGenesisOverlay(config, db_connection)
+        #centrality_estimator = initial_condition.get_centrality_estimator()
     elif overlay_type == 'none':
         overlay_stage = NoneOverlay(config, db_connection)
         config['input']['overlay']['type'] = None
@@ -93,12 +100,12 @@ def main():
         config['input']['hydrodynamics']['type'] = None
     else:
         raise ValueError(f"Unknown hydro type: {hydro_type}")
-        update_event_entropy(db_connection, args.event_id, entropy)
+        update_event_centrality_estimator(db_connection, args.event_id, centrality_estimator)
 
     hydro_stage.validate(args.event_id)
     hydro_stage.run(args.event_id)
     update_hydro_type(db_connection, args.event_id, hydro_type)
-    # Update entropy in the database
+    # Update centrality_estimator in the database
 
     particlization_type = config['input'].get('particlization', {}).get('type', 'none').lower()
     if particlization_type == 'is3d':

@@ -88,6 +88,7 @@ class TrentoInitialCondition(InitialCondition):
             f.write(f"centrality-max = {params['centrality-max']}\n")
             f.write(f"grid-max = {self.config['global']['grid']['x_max']}\n")
             f.write(f"grid-step = {self.config['global']['grid']['step_x']}\n")
+            f.write(f"normalization = {params['normalization']}\n")
 
         print(f"TRENTo config file created at {config_file_path}")
         return config_file_path
@@ -124,8 +125,7 @@ class TrentoInitialCondition(InitialCondition):
                 eps5=event_data['e5'],
                 ic_type='trento'
             )
-            self.entropy = event_data['s']
-            print("entropy: ", self.entropy)
+            self.centrality_estimator = event_data['s']
         #convert to ccake format
         ccake_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'ccake_ic.dat')
         sparse_output = False

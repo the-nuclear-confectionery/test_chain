@@ -74,6 +74,17 @@ export PYTHIA8_ROOT_DIR="${PREFIX}/pythia8310"
 export HEPMC_DIR=${PREFIX}
 
 
+#install ampt 
+cd $WORKDIR/models
+wget https://myweb.ecu.edu/linz/ampt/ampt-v1.26t9b-v2.26t9b.zip
+unzip ampt-v1.26t9b-v2.26t9b.zip
+mv Ampt-v1.26t9b-v2.26t9b AMPT
+rm -rf ampt-v1.26t9b-v2.26t9b.zip
+cd AMPT
+sed -i 's/f77/gfortran/' Makefile
+make FC=gfortran
+sed -i '34 s/0/3/' input.ampt #config to write all files necessary to hydro
+sed -i '28 s/0/11/' input.ampt 
 
 
 cd $WORKDIR/models/trento
@@ -82,6 +93,11 @@ cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX
 make -j8 install
 
 cd $WORKDIR/models/ICCING
+make -j8
+
+cd $WORKDIR/models/AMPTGenesis
+mkdir build && cd build
+cmake ..
 make -j8
 
 cd $WORKDIR/models/CCAKE

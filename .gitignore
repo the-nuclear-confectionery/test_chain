@@ -7,3 +7,4 @@ tables/*
 *.pyc
 *.db
 analysis/build
+models/AMPT

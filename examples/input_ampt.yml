@@ -7,36 +7,33 @@ global:
     x_max: 12.0
     y_max: 12.0
     eta_max: 6.0
-    step_x: 0.03
-    step_y: 0.03
-    step_eta: 0.0
+    step_x: 0.4
+    step_y: 0.4
+    step_eta: 0.4
   energy:
     value: 5.02
     unit: TeV
   tau_hydro: 0.6
-  ion_A: Pb
-  ion_B: Pb
 
 input:
+
   initial_conditions:
-    type: Trento
+    type: ampt
     parameters:
       ion_A:
         species: Pb
       ion_B:
         species: Pb
-      normalization: 1
-      seed: 18783004
-      entropy-dict-dir: /u/kpala/git_repos/test/test_chain/misc/PbPb_5020_sigma0d30_3M.dat
-      centrality-min: 70
-      centrality-max: 80
 
   overlay:
-    type: ICCING
+    type: AMPTGenesis
     parameters:
-      trento_normalization: 125
+      smearing:
+        sigma_r: 0.6
+        sigma_eta: 0.6
+        K: 1.
 
-
+  
   hydrodynamics:
     type: CCAKE
     parameters:
@@ -54,17 +51,18 @@ input:
   particlization:
     type: is3d
     parameters:
-      mode: 8
       oversample: 1
       max_num_samples: 1
   
   afterburner:
     type: smash
     parameters:
-      decays_only: true
-          
+       decays_only: true
 
   analysis:
     type: hepmc3
     parameters:
       rapidiy_cut: 0.5
+      
+          
+

@@ -6,7 +6,7 @@ global:
   grid:
     x_max: 12.0
     y_max: 12.0
-    eta_max: 6.0
+    eta_max: 10.0
     step_x: 0.03
     step_y: 0.03
     step_eta: 0.0
@@ -18,6 +18,7 @@ global:
   ion_B: Pb
 
 input:
+
   initial_conditions:
     type: Trento
     parameters:
@@ -25,24 +26,19 @@ input:
         species: Pb
       ion_B:
         species: Pb
-      normalization: 1
-      seed: 18783004
-      entropy-dict-dir: /u/kpala/git_repos/test/test_chain/misc/PbPb_5020_sigma0d30_3M.dat
-      centrality-min: 70
-      centrality-max: 80
+      normalization: 1 # 1/fm^3
 
   overlay:
     type: ICCING
     parameters:
       trento_normalization: 125
 
-
+  
   hydrodynamics:
     type: CCAKE
     parameters:
       dt: 0.05
       h_T: 0.5
-      energy_cutoff: 0.1
     initial_conditions:
       input_as_entropy: false
     output:
@@ -54,7 +50,6 @@ input:
   particlization:
     type: is3d
     parameters:
-      mode: 8
       oversample: 1
       max_num_samples: 1
   

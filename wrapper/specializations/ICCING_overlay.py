@@ -151,7 +151,7 @@ class ICCINGOverlay(Overlay):
         try:
             with open(output_file, 'r') as f:
                 for line in f:
-                    # Split line into values, ignore event number and total entropy
+                    # Split line into values, ignore event number
                     data = line.strip().split()
                     if len(data) >= 14:  # Ensure enough values exist to parse
                         eps2 = float(data[2])  # 1st harmonic magnitude

@@ -9,7 +9,7 @@ def initialize_database(db_path):
     CREATE TABLE IF NOT EXISTS events (
         event_id INTEGER PRIMARY KEY,
         collision_id INTEGER,
-        entropy REAL,
+        centrality_estimator REAL,
         output_path TEXT,
         ic_type TEXT,
         overlay_type TEXT,
@@ -179,11 +179,11 @@ def insert_analysis(connection, event_id, analysis_type, rapidity_cut):
     ''', (event_id, analysis_type, rapidity_cut))
     connection.commit()
 
-def update_event_entropy(connection, event_id, entropy):
+def update_event_centrality_estimator(connection, event_id, centrality_estimator):
     cursor = connection.cursor()
     cursor.execute('''
-    UPDATE events SET entropy = ? WHERE event_id = ?
-    ''', (entropy, event_id))
+    UPDATE events SET centrality_estimator = ? WHERE event_id = ?
+    ''', (centrality_estimator, event_id))
     connection.commit()
 
 def update_ic_type(connection, event_id, ic_type):
