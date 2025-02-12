@@ -46,7 +46,7 @@ class ICCINGOverlay(Overlay):
             print("Warning: Overlay input type is not sparse, setting it to sparse.")
             self.config['input']['overlay']['parameters']['input_type'] = 'sparse'
         
-        if self.config['input']['preequilibrium']['type'] != None:
+        if self.config['input'].get('preequilibrium', {}).get('type')!= None:
             raise ValueError("Preequilibrium type must be 'none' when using ICCING overlay.")
 
 

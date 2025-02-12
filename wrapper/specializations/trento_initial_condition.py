@@ -58,7 +58,7 @@ class TrentoInitialCondition(InitialCondition):
         os.makedirs(output_dir, exist_ok=True)
 
         #check for freeestreaming
-        if self.config['input']['preequilibrium']['type'] == 'freestreaming':
+        if self.config['input'].get('preequilibrium', {}).get('type') == 'freestreaming':
             output_dir = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', 'ic.hdf')
 
         config_dir = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'configs')
@@ -134,7 +134,7 @@ class TrentoInitialCondition(InitialCondition):
         ccake_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'ccake_ic.dat')
         sparse_output = False
         #check for freestreaming
-        if self.config['input']['preequilibrium']['type'] != 'freestreaming':
+        if self.config['input'].get('preequilibrium', {}).get('type') != 'freestreaming':
             if self.config['input']['initial_conditions']['parameters']['sparse-output'] == True:
                 sparse_output = True
                 trento_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'ic0.dat')

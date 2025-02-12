@@ -55,8 +55,24 @@ def main():
         args.config_path
     )
 
-    # Detect and initialize initial condition automatically
+    # Detect and initialize the modules
     ic_type = config['input'].get('initial_conditions', {}).get('type', 'none').lower()
+    overlay_type = config['input'].get('overlay', {}).get('type', 'none').lower()
+    preequilibrium_type = config['input'].get('preequilibrium', {}).get('type', 'none').lower()
+    hydro_type = config['input'].get('hydrodynamics', {}).get('type', 'none').lower()
+    particlization_type = config['input'].get('particlization', {}).get('type', 'none').lower()
+    afterburner_type = config['input'].get('afterburner', {}).get('type', 'none').lower()
+    analysis_type = config['input'].get('analysis', {}).get('type', 'none').lower()
+
+    #report the simulation chain stages and how it will be executed
+    print(f"Running simulation chain for event {args.event_id}:")
+    print(f"Initial Condition: {ic_type}")
+    print(f"Overlay: {overlay_type}")
+    print(f"Preequilibrium: {preequilibrium_type}")
+    print(f"Hydrodynamics: {hydro_type}")
+    print(f"Particlization: {particlization_type}")
+    print(f"Afterburner: {afterburner_type}")
+    print(f"Analysis: {analysis_type}")
 
     if ic_type == 'trento':
         initial_condition = TrentoInitialCondition(config, db_connection)
@@ -73,7 +89,7 @@ def main():
     update_ic_type(db_connection, args.event_id, ic_type)
     centrality_estimator = initial_condition.get_centrality_estimator()
     # Detect overlay automatically
-    overlay_type = config['input'].get('overlay', {}).get('type', 'none').lower()
+
 
     if overlay_type == 'iccing':
         overlay_stage = ICCINGOverlay(config, db_connection)
@@ -92,8 +108,7 @@ def main():
     overlay_stage.run(args.event_id)
     update_overlay_type(db_connection, args.event_id, overlay_type)
 
-    # Detect preequilibrium automatically
-    preequilibrium_type = config['input'].get('preequilibrium', {}).get('type', 'none').lower()
+
     if preequilibrium_type == 'freestreaming':
         preequilibrium_stage = Freestreaming(config, db_connection)
     elif preequilibrium_type == 'none':
@@ -105,7 +120,7 @@ def main():
     preequilibrium_stage.run(args.event_id)
     update_preequilibrium_type(db_connection, args.event_id, preequilibrium_type)
 
-    hydro_type = config['input'].get('hydrodynamics', {}).get('type', 'none').lower()
+
     if hydro_type == 'ccake':
         hydro_stage = CCAKEHydro(config, db_connection)
     #elif hydro_type == 'music':
@@ -122,7 +137,6 @@ def main():
     update_hydro_type(db_connection, args.event_id, hydro_type)
     # Update centrality_estimator in the database
 
-    particlization_type = config['input'].get('particlization', {}).get('type', 'none').lower()
     if particlization_type == 'is3d':
         particlization_stage = iS3DParticlization(config, db_connection)
     elif particlization_type == 'none':
@@ -138,7 +152,7 @@ def main():
     update_particlization_type(db_connection, args.event_id, particlization_type)
 
 
-    afterburner_type = config['input'].get('afterburner', {}).get('type', 'none').lower()
+
     if afterburner_type == 'none':
         afterburner_stage = NoneAfterburner(config, db_connection)
         config['input']['afterburner']['type'] = None
@@ -153,7 +167,7 @@ def main():
     update_afterburner_type(db_connection, args.event_id, afterburner_type)
 
 
-    analysis_type = config['input'].get('analysis', {}).get('type', 'none').lower()
+
     if analysis_type == 'none':
         analysis_stage = NoneAnalysis(config, db_connection)
         config['input']['analysis']['type'] = None

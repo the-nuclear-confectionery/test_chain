@@ -740,6 +740,11 @@ properties:
           type:
             type: string
             enum: [freestreaming]
+        properties:
+          input_file:
+            type: string
+            default: default
+            description: "Path to the input file for preequilibrium."
         
       hydrodynamics:
         type: object
