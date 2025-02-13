@@ -12,6 +12,9 @@ class NoneHydro(Hydrodynamics):
         insert_hydro(
             self.db_connection,
             event_id=event_id,
+            initial_time=None,
+            freeze_out_temperature=None,
+            dimensions='none',
             hydro_type='none',
-            dimensions='none'
+
         )

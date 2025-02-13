@@ -123,10 +123,7 @@ class TrentoInitialCondition(InitialCondition):
                 self.db_connection,
                 event_id=event_id,
                 seed=seed,
-                eps2=event_data['e2'],
-                eps3=event_data['e3'],
-                eps4=event_data['e4'],
-                eps5=event_data['e5'],
+                seed2=None,
                 ic_type='trento'
             )
             self.centrality_estimator = event_data['s']
@@ -182,6 +179,7 @@ class TrentoInitialCondition(InitialCondition):
                         'e5': float(fields[7])
                     }
                     events_data.append(event)
+                self.centrality_estimator = event['s']
             except ValueError:
                 continue
 

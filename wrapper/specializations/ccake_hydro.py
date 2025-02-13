@@ -182,7 +182,9 @@ class CCAKEHydro(Hydrodynamics):
         #insert into db
         insert_hydro(self.db_connection, 
                      event_id=event_id, 
-                     hydro_type=self.config['input']['hydrodynamics']['type'],
+                     initial_time=self.config['global']['tau_hydro'],
+                     freeze_out_temperature=self.config['input']['hydrodynamics']['particlization']['T'],
                      dimensions= self.config['input']['hydrodynamics']['initial_conditions']['dimension'],
+                     hydro_type=self.config['input']['hydrodynamics']['type'],
                      )
      

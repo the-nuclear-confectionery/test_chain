@@ -222,7 +222,7 @@ class AmptInitialCondition(InitialCondition):
         hijing_seed = self.config['input']['initial_conditions']['parameters']['hijing_seed']
         parton_cascade_seed = self.config['input']['initial_conditions']['parameters']['parton_cascade_seed']
         print(f"Writing initial condition to db with hijing_seed={hijing_seed}, parton_cascade_seed={parton_cascade_seed}")
-        insert_initial_condition(self.db_connection, event_id, hijing_seed, parton_cascade_seed, 0, 0, 0, "AMPT - e2 = cascade_seed")
+        insert_initial_condition(self.db_connection, event_id, hijing_seed, parton_cascade_seed, "AMPT")
 
         print(f"AMPT execution completed for event {event_id}.")
 

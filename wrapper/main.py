@@ -43,6 +43,8 @@ def main():
     #copy tables dir to tmp dir with rsync
     os.system(f"rsync -a {tables_dir} {os.path.join(config['global']['tmp'], f'event_{args.event_id}')}/") 
     
+    #copy config to output dir
+    shutil.copy(args.config_path, os.path.join(config['global']['output'], f"event_{args.event_id}", "config.yml"))
 
     collision_system = CollisionSystem(config, db_connection)
     collision_id = collision_system.insert_collision_system()
@@ -52,7 +54,7 @@ def main():
         args.event_id,
         config['global']['output']+"/event_" + str(args.event_id),
         collision_id,
-        args.config_path
+        os.path.join(config['global']['output'], f"event_{args.event_id}", "config.yml")
     )
 
     # Detect and initialize the modules
@@ -88,15 +90,14 @@ def main():
     initial_condition.run(args.event_id)
     update_ic_type(db_connection, args.event_id, ic_type)
     centrality_estimator = initial_condition.get_centrality_estimator()
+    update_event_centrality_estimator(db_connection, args.event_id, centrality_estimator)
     # Detect overlay automatically
 
 
     if overlay_type == 'iccing':
         overlay_stage = ICCINGOverlay(config, db_connection)
-        #centrality_estimator = initial_condition.get_centrality_estimator()
     elif overlay_type == 'amptgenesis':
         overlay_stage = AmptGenesisOverlay(config, db_connection)
-        #centrality_estimator = initial_condition.get_centrality_estimator()
     elif overlay_type == 'none':
         overlay_stage = NoneOverlay(config, db_connection)
         config['input']['overlay']['type'] = None
@@ -130,7 +131,7 @@ def main():
         config['input']['hydrodynamics']['type'] = None
     else:
         raise ValueError(f"Unknown hydro type: {hydro_type}")
-        update_event_centrality_estimator(db_connection, args.event_id, centrality_estimator)
+        
 
     hydro_stage.validate(args.event_id)
     hydro_stage.run(args.event_id)
@@ -182,6 +183,7 @@ def main():
     analysis_stage.run(args.event_id)
 
     update_analysis_type(db_connection, args.event_id, analysis_type)
+
     #remove tmp
     shutil.rmtree(os.path.join(config['global']['tmp'], f"event_{args.event_id}"))
 

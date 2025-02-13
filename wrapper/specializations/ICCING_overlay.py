@@ -146,7 +146,7 @@ class ICCINGOverlay(Overlay):
         #eps2, eps3, eps4, eps5 = self.parse_output(output_file)
 
         eps2, eps3, eps4, eps5 = self.parse_output(os.path.join(self.config['global']['output'], f"event_{event_id}", 'iccing', f'energy_eccentricities.dat'))
-        insert_overlay(self.db_connection, event_id, seed, eps2, eps3, eps4, eps5, "ICCING")
+        insert_overlay(self.db_connection, event_id, seed, "ICCING")
 
         print(f"ICCING overlay completed for event {event_id}.")
         

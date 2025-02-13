@@ -12,10 +12,6 @@ class NoneInitialCondition(InitialCondition):
         insert_initial_condition(
             self.db_connection,
             event_id=event_id,
-            seed=None,  # No seed for "none"
-            eps2=None,
-            eps3=None,
-            eps4=None,
-            eps5=None,
+            seed=None,
             ic_type='none'
         )
