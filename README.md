@@ -1,6 +1,6 @@
-Installation and Usage Guide
+# Installation and Usage Guide
 
-1. Install Anaconda or Miniconda
+## 1. Install Anaconda or Miniconda
 
 If you haven't installed Anaconda or Miniconda, do so first. On a cluster, you can check for an available module with:
 
@@ -16,7 +16,9 @@ conda init
 
 Then, restart your terminal for the changes to take effect.
 
-2. Install the Conda Environment
+---
+
+## 2. Install the Conda Environment
 
 From the main project directory, install the Conda environment using:
 
@@ -26,7 +28,9 @@ Activate the environment with:
 
 conda activate ctop
 
-3. Install the Project
+---
+
+## 3. Install the Project
 
 Run the installation script:
 
@@ -41,7 +45,9 @@ conda activate ctop
 
 The installation sets up environment variables, for example, $WORKDIR will always point to the project root directory.
 
-4. Run a Single Event with the Wrapper
+---
+
+## 4. Run a Single Event with the Wrapper
 
 Ensure the Conda environment is active:
 
@@ -51,13 +57,14 @@ Then run:
 
 python $WORKDIR/wrapper/main.py <event_number> <path/to/database> <path/to/yml/config>
 
-The SQL database will store event metadata. If the specified database does not exist, it will be created automatically.
-
-Example YAML configuration files can be found in:
+- The SQL database will store event metadata. If the specified database does not exist, it will be created automatically.
+- Example YAML configuration files can be found in:
 
 $WORKDIR/examples
 
-5. Run Multiple Events with SLURM
+---
+
+## 5. Run Multiple Events with SLURM
 
 To launch a batch job for multiple events, use the run_wrapper.sh script located in:
 
@@ -65,4 +72,3 @@ $WORKDIR/scripts
 
 Modify the script as needed and submit it using SLURM.
 
-This guide should help you quickly set up and run simulations efficiently. If you encounter issues, refer to the documentation or seek assistance from the development team.
