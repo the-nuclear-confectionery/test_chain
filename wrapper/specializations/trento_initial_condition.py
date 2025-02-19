@@ -71,7 +71,7 @@ class TrentoInitialCondition(InitialCondition):
         with open(config_file_path, 'w') as f:
             f.write(f"random-seed = {seed}\n")
             f.write(f"projectile = {params['ion_A']['species']}\n")
-            f.write(f"target = {params['ion_B']['species']}\n")  # Fixed duplicate "projectile"
+            f.write(f"projectile = {params['ion_B']['species']}\n")  # Fixed duplicate "projectile"
             f.write(f"number-events = {params['number-events']}\n")
             f.write(f"entropy-dict-dir = {params['entropy-dict-dir']}\n")
             f.write(f"output = {output_dir}\n")
@@ -103,7 +103,7 @@ class TrentoInitialCondition(InitialCondition):
             f.write(f"centrality-max = {params['centrality-max']}\n")
             f.write(f"grid-max = {self.config['global']['grid']['x_max']}\n")
             f.write(f"grid-step = {self.config['global']['grid']['step_x']}\n")
-            f.write(f"reduced-thickness-form = {params['reduced-thickness-form']}\n")
+            # f.write(f"reduced-thickness-form = {params['reduced-thickness-form']}\n")
 
         print(f"TRENTo config file created at {config_file_path}")
         return config_file_path
