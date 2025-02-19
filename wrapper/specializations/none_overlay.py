@@ -11,6 +11,7 @@ class NoneOverlay(Overlay):
         insert_overlay(
             self.db_connection,
             event_id=event_id,
+            seed=None,
             overlay_type='none'
         )
 
