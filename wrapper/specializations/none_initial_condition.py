@@ -13,5 +13,6 @@ class NoneInitialCondition(InitialCondition):
             self.db_connection,
             event_id=event_id,
             seed=None,
+            seed2=None,
             ic_type='none'
         )
