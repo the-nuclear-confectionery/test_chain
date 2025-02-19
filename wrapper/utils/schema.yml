@@ -259,6 +259,10 @@ properties:
                       type: number
                       default: -100.0
                       description: "Maximum centrality percentage."
+                    reduced-thickness-form:
+                      type: string
+                      default: "default"
+                      description: "To be determined"
                     seed:
                       anyOf:
                         - type: string
