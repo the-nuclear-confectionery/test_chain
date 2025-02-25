@@ -65,13 +65,11 @@ class CCAKEHydro(Hydrodynamics):
                 #error 
                 raise ValueError("No initial conditions or overlay specified, so initial condition file amd IC type must be specified.")  
             #check for freestreaming preequilibrium
-
-
         else:
             #check if ic type is set. It should always be set if the file is not default
             if self.config['input']['hydrodynamics']['initial_conditions']['type'] == 'default':
                 #error 
-                raise ValueError("Initial condition type must be specified when reading from external file.")
+                raise ValueError("Initial condition type value in CCAKE yaml must be specified when reading from external file.")
             
 
         #check eos path
@@ -178,7 +176,11 @@ class CCAKEHydro(Hydrodynamics):
         output_dir = os.path.join(self.config['global']['output'], f"event_{event_id}", 'ccake')
         print("Running CCAKE")
         command = f"{ccake_executable} {os.path.join(self.config['global']['output'], f'event_{event_id}', 'configs', 'ccake.yaml')} {output_dir}"
-        os.system(command)
+        #os.system(command)
+        subprocess.run([ccake_executable, 
+                os.path.join(self.config['global']['output'], f'event_{event_id}', 'configs', 'ccake.yaml'), 
+                output_dir], check=True)
+
         #insert into db
         insert_hydro(self.db_connection, 
                      event_id=event_id, 

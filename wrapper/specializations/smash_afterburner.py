@@ -2,6 +2,7 @@ import os
 import random
 from stages.afterburner import Afterburner
 from utils.db import insert_afterburner
+import subprocess
 
 class SMASHAfterburner(Afterburner):
     def __init__(self, config, db_connection):
@@ -115,13 +116,16 @@ class SMASHAfterburner(Afterburner):
         os.chdir(os.path.join(self.config['global']['tmp'], f"event_{event_id}"))
 
         # Build the SMASH command
-        command = (
-            f"smash -i {config_file_path} "
-            f"-o {output_dir}"
-        )
 
-        print(f"Running SMASH afterburner with command: {command}")
-        os.system(command)
+        command = [
+            "smash",
+            "-i", config_file_path,
+            "-o", output_dir
+        ]
+
+        print(f"Running SMASH afterburner with command: {' '.join(command)}")
+        subprocess.run(command, check=True)
+
         print(f"SMASH afterburner completed for event {event_id}.")
         #remove the tabulations generated in the output basedir
         os.system(f"rm -rf {output_basedir}/tabulations")

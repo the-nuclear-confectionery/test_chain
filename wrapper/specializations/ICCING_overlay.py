@@ -2,6 +2,7 @@ import os
 import random
 from stages.overlay import Overlay
 from utils.db import insert_overlay
+import subprocess
 
 class ICCINGOverlay(Overlay):
     def __init__(self, config, db_connection):
@@ -140,7 +141,8 @@ class ICCINGOverlay(Overlay):
         #print current dir
         os.system("pwd")
         print(f"Running ICCING overlay with command: {command}")
-        os.system(command)
+        subprocess.run([executable_path, config_file_path], check=True)
+
         #output_file = os.path.join(os.path.dirname(config_file_path), f'iccing_output_{event_id}.txt')
         # Parse the output for eccentricities and insert them into the database
         #eps2, eps3, eps4, eps5 = self.parse_output(output_file)

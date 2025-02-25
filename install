@@ -101,7 +101,8 @@ cmake ..
 make -j8
 
 #copy freestream to wrapper
-cp -rf $WORKDIR/models/freestream/freestream.py $WORKDIR/wrapper/external_packages 
+mkdir -p $WORKDIR/wrapper/external_packages/
+cp -rf $WORKDIR/models/freestream/freestream.py $WORKDIR/wrapper/external_packages/ 
 
 
 cd $WORKDIR/models/CCAKE
@@ -121,7 +122,6 @@ cd $WORKDIR/models/iS3D
 mkdir build && cd build
 cmake ..
 make -j8 install
-
 
 #5) Setup environment variables
 export SMASH_DIR="${WORKDIR}/models/smash/"

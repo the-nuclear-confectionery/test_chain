@@ -646,7 +646,7 @@ properties:
                       description: "Lambda/m parameter."
                     perturbative_regime:
                       type: number
-                      default: 0.0
+                      default: 0.9
                       description: "Perturbative regime parameter."
                     background_points:
                       type: integer
@@ -763,7 +763,7 @@ properties:
             properties:
               type:
                 type: string
-                enum: [ccake, iccing, default]
+                enum: [ccake, ICCING, default]
                 default: default
                 description: "Type of initial conditions to be used (ccake, iccing)."
               file:
