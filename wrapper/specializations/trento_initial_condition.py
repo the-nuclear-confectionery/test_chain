@@ -137,7 +137,9 @@ class TrentoInitialCondition(InitialCondition):
                 seed2=None,
                 ic_type='trento'
             )
-            self.centrality_estimator = event_data['s']
+            self.centrality_estimator = event_data['s']/self.config['input']['initial_conditions']['parameters']['normalization']
+
+
         #convert to ccake format
         ccake_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'ccake_ic.dat')
         sparse_output = False
