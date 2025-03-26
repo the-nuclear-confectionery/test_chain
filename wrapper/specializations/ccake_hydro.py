@@ -158,6 +158,7 @@ class CCAKEHydro(Hydrodynamics):
                 'hdf_evolution': hydrodynamics['output']['hdf_evolution'],
                 'txt_evolution': hydrodynamics['output']['txt_evolution'],
                 'calculate_observables': hydrodynamics['output']['calculate_observables'],
+                'check_causality': hydrodynamics['output']['check_causality'],
             }
         }
 
