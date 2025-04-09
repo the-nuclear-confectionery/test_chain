@@ -13,12 +13,13 @@ dependencies:
   
   # General libraries and tools
   - parallel
-  - gxx  # Compiler
+  - gxx=11.4.0  # Compiler
+  - gcc=11.4.0
   - openmpi
   - hdf5
   - zlib
   - doxygen
-  - gsl
+  - gsl=2.7.1
   - cmake
   - eigen
   - yaml-cpp
