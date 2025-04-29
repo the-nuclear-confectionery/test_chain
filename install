@@ -6,6 +6,7 @@ git submodule update
 export PREFIX=${CONDA_PREFIX}
 export WORKDIR=${PWD}
 export CABANASRC=${CONDA_PREFIX}/cabana
+export KOKKOSSRC=${CONDA_PREFIX}/kokkos
 export ARBORXSRC=${CONDA_PREFIX}/ArborX
 
 conda env config vars set PREFIX=${PREFIX} WORKDIR=${WORKDIR} CPATH=${PREFIX}/include CABANASRCC=${CABANASRCC} KOKKOSSRC=${KOKKOSSRCC}
