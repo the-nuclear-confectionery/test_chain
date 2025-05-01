@@ -7,17 +7,8 @@ export PREFIX=${CONDA_PREFIX}
 export WORKDIR=${PWD}
 export CABANASRC=${CONDA_PREFIX}/cabana
 export KOKKOSSRC=${CONDA_PREFIX}/kokkos
-export ARBORXSRC=${CONDA_PREFIX}/ArborX
 
 conda env config vars set PREFIX=${PREFIX} WORKDIR=${WORKDIR} CPATH=${PREFIX}/include CABANASRCC=${CABANASRCC} KOKKOSSRC=${KOKKOSSRCC}
-
-git clone https://github.com/arborx/ArborX.git $ARBORXSRC
-cd $ARBORXSRC
-mkdir $ARBORXSRC/build && cd $ARBORXSRC/build
-cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX/arborx-install \
-         -DCMAKE_BUILD_TYPE=Release
-make -j
-make install
 
 cd ${PREFIX}
 
@@ -59,8 +50,6 @@ cmake -DCMAKE_BUILD_TYPE="Release" \
 cmake --build . --target install -j
 
 git clone https://github.com/ECP-copa/Cabana.git $CABANASRC
-cd $CABANASRC
-git checkout 8cf259913e8fb3822ce5095f6349c56798190471
 mkdir -p $CABANASRC/build && cd $CABANASRC/build
     cmake -D CMAKE_BUILD_TYPE="Release" \
           -D CMAKE_CXX_STANDARD=17 \
@@ -69,10 +58,7 @@ mkdir -p $CABANASRC/build && cd $CABANASRC/build
           -D CMAKE_CXX_COMPILER=g++\
           -D Cabana_REQUIRE_CUDA=OFF \
           -D Cabana_ENABLE_TESTING=OFF \
-          -D Cabana_ENABLE_EXAMPLES=OFF \
-          -D Cabana_ENABLE_ARBORX=ON \
-          -D ArborX_DIR=$ARBORXSRC/lib/cmake/ArborX \
-          $CABANASRCC
+          -D Cabana_ENABLE_EXAMPLES=OFF $CABANASRCC
 cmake --build . --target install -j
 
 
