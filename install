@@ -8,7 +8,7 @@ export WORKDIR=${PWD}
 export CABANASRC=${CONDA_PREFIX}/cabana
 export KOKKOSSRC=${CONDA_PREFIX}/kokkos
 
-conda env config vars set PREFIX=${PREFIX} WORKDIR=${WORKDIR} CPATH=${PREFIX}/include CABANASRCC=${CABANASRCC} KOKKOSSRC=${KOKKOSSRCC}
+conda env config vars set PREFIX=${PREFIX} WORKDIR=${WORKDIR} CPATH=${PREFIX}/include CABANASRC=${CABANASRC} KOKKOSSRC=${KOKKOSSRC}
 
 cd ${PREFIX}
 
@@ -58,7 +58,7 @@ mkdir -p $CABANASRC/build && cd $CABANASRC/build
           -D CMAKE_CXX_COMPILER=g++\
           -D Cabana_REQUIRE_CUDA=OFF \
           -D Cabana_ENABLE_TESTING=OFF \
-          -D Cabana_ENABLE_EXAMPLES=OFF $CABANASRCC
+          -D Cabana_ENABLE_EXAMPLES=OFF $CABANASRC
 cmake --build . --target install -j
 
 
