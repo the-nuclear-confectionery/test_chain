@@ -1,5 +1,5 @@
 // Restored and expanded version of the code with calculations for the original and new histograms
-// Author: Willian M. Serenone
+// Author: Willian M. Serenone, Kevin P. Pala
 
 #include "TTree.h"
 #include "TH1.h"
@@ -61,6 +61,10 @@ void charged_spectra(const std::string& file_in_path, const TString& file_out_pa
     std::vector<TH1D> hImQ_pions_minus;
     std::vector<TH1D> hReQ_pions_plus;
     std::vector<TH1D> hImQ_pions_plus;
+    std::vector<TH1D> hReQ_kaons_minus;
+    std::vector<TH1D> hImQ_kaons_minus;
+    std::vector<TH1D> hReQ_kaons_plus;
+    std::vector<TH1D> hImQ_kaons_plus;
     std::vector<TH1D> hReQ_protons_minus;
     std::vector<TH1D> hImQ_protons_minus;
     std::vector<TH1D> hReQ_protons_plus;
@@ -79,6 +83,22 @@ void charged_spectra(const std::string& file_in_path, const TString& file_out_pa
     //sampler counter 
     TH1D hSampleCounter("hSampleCounter", "hSampleCounter", 1, 0, 1);
 
+    //
+    TH1D hN_charge("hN_charge", "Number of charged particles", 1, 0, 1);
+    // add for all species
+    TH1D hN_pions_minus("hN_pions_minus", "Number of #pi^{-}", 1, 0, 1);
+    TH1D hN_pions_plus("hN_pions_plus", "Number of #pi^{+}", 1, 0, 1);
+    TH1D hN_kaons_minus("hN_kaons_minus", "Number of K^{-}", 1, 0, 1);
+    TH1D hN_kaons_plus("hN_kaons_plus", "Number of K^{+}", 1, 0, 1);
+    TH1D hN_protons_minus("hN_protons_minus", "Number of p^{-}", 1, 0, 1);
+    TH1D hN_protons_plus("hN_protons_plus", "Number of p^{+}", 1, 0, 1);
+    TH1D hN_lambda_plus("hN_lambda_plus", "Number of Lambda^{+}", 1, 0, 1);
+    TH1D hN_lambda_minus("hN_lambda_minus", "Number of Lambda^{-}", 1, 0, 1);
+    TH1D hN_sigma_plus("hN_sigma_plus", "Number of Sigma^{+}", 1, 0, 1);
+    TH1D hN_sigma_minus("hN_sigma_minus", "Number of Sigma^{-}", 1, 0, 1);
+    TH1D hN_omega("hN_omega", "Number of Omega", 1, 0, 1);
+
+
     // Histograms for charged particles
     TH1D hpt_charged("hpt_charged", "p_{T} spectra - charged particles", nbins_pt, 0, max_pt);
     TH1D hphi_charged("hphi_charged", "#varphi spectra - charged particles", nphi, -M_PI, M_PI);
@@ -92,6 +112,15 @@ void charged_spectra(const std::string& file_in_path, const TString& file_out_pa
     TH1D hpt_pions_plus("hpt_pions_plus", "p_{T} spectra - #pi^{+}", nbins_pt, 0, max_pt);
     TH1D hphi_pions_plus("hphi_pions_plus", "#varphi spectra - #pi^{+}", nphi, -M_PI, M_PI);
     TH1D hy_pions_plus("hy_pions_plus", "dN/dy - #pi^{+}", nbins_rap, -max_rap, max_rap);
+
+    //kaons
+    TH1D hpt_kaons_minus("hpt_kaons_minus", "p_{T} spectra - K^{-}", nbins_pt, 0, max_pt);
+    TH1D hphi_kaons_minus("hphi_kaons_minus", "#varphi spectra - K^{-}", nphi, -M_PI, M_PI);
+    TH1D hy_kaons_minus("hy_kaons_minus", "dN/dy - K^{-}", nbins_rap, -max_rap, max_rap);
+
+    TH1D hpt_kaons_plus("hpt_kaons_plus", "p_{T} spectra - K^{+}", nbins_pt, 0, max_pt);
+    TH1D hphi_kaons_plus("hphi_kaons_plus", "#varphi spectra - K^{+}", nphi, -M_PI, M_PI);
+    TH1D hy_kaons_plus("hy_kaons_plus", "dN/dy - K^{+}", nbins_rap, -max_rap, max_rap);
 
     TH1D hpt_protons_minus("hpt_protons_minus", "p_{T} spectra - p^{-}", nbins_pt, 0, max_pt);
     TH1D hphi_protons_minus("hphi_protons_minus", "#varphi spectra - p^{-}", nphi, -M_PI, M_PI);
@@ -129,6 +158,12 @@ void charged_spectra(const std::string& file_in_path, const TString& file_out_pa
 
         hReQ_pions_plus.push_back(TH1D(TString::Format("ReQ_pions_plus_%d", in), TString::Format("Real part of Q%d - #pi^{+}", in), 100, -5.0, 5.0));
         hImQ_pions_plus.push_back(TH1D(TString::Format("ImQ_pions_plus_%d", in), TString::Format("Imag part of Q%d - #pi^{+}", in), 100, -5.0, 5.0));
+
+        hReQ_kaons_minus.push_back(TH1D(TString::Format("ReQ_kaons_minus_%d", in), TString::Format("Real part of Q%d - K^{-}", in), 100, -5.0, 5.0));
+        hImQ_kaons_minus.push_back(TH1D(TString::Format("ImQ_kaons_minus_%d", in), TString::Format("Imag part of Q%d - K^{-}", in), 100, -5.0, 5.0));
+
+        hReQ_kaons_plus.push_back(TH1D(TString::Format("ReQ_kaons_plus_%d", in), TString::Format("Real part of Q%d - K^{+}", in), 100, -5.0, 5.0));
+        hImQ_kaons_plus.push_back(TH1D(TString::Format("ImQ_kaons_plus_%d", in), TString::Format("Imag part of Q%d - K^{+}", in), 100, -5.0, 5.0));
 
         hReQ_protons_minus.push_back(TH1D(TString::Format("ReQ_protons_minus_%d", in), TString::Format("Real part of Q%d - p^{-}", in), 100, -5.0, 5.0));
         hImQ_protons_minus.push_back(TH1D(TString::Format("ImQ_protons_minus_%d", in), TString::Format("Imag part of Q%d - p^{-}", in), 100, -5.0, 5.0));
@@ -171,6 +206,7 @@ void charged_spectra(const std::string& file_in_path, const TString& file_out_pa
             double eta = part.momentum.eta();
             double pt = part.momentum.pt();
             double phi = part.momentum.phi();
+            double y = part.momentum.rap();
     
             if (phi > M_PI) phi -= 2 * M_PI;
             if (phi < -M_PI) phi += 2 * M_PI;
@@ -192,100 +228,187 @@ void charged_spectra(const std::string& file_in_path, const TString& file_out_pa
             // Identified particle analysis
             switch (id) {
                 case -211:  // Pion-
-                    hy_pions_minus.Fill(eta);
-                    hpt_pions_minus.Fill(pt);
-                    hphi_pions_minus.Fill(phi);
+                    hy_pions_minus.Fill(y);
+                    if (fabs(y) < rap_cut) {
+                        hpt_pions_minus.Fill(pt);
+                        hphi_pions_minus.Fill(phi);
+                    }
                     break;
                 case 211:  // Pion+
-                    hy_pions_plus.Fill(eta);
+                    hy_pions_plus.Fill(y);
+                    if (fabs(y) < rap_cut) {
                     hpt_pions_plus.Fill(pt);
                     hphi_pions_plus.Fill(phi);
+                    }
                     break;
+                case 321:  // Kaon+
+                    hy_kaons_plus.Fill(y);
+                    if (fabs(y) < rap_cut) {
+                    hpt_kaons_plus.Fill(pt);
+                    hphi_kaons_plus.Fill(phi);
+                    }
+                    break;
+                case -321:  // Kaon-
+                    hy_kaons_minus.Fill(y);
+                    if (fabs(y) < rap_cut) {
+                    hpt_kaons_minus.Fill(pt);
+                    hphi_kaons_minus.Fill(phi);
+                    }
+                    break;
+
                 case 2212:  // Proton+
-                    hy_protons_plus.Fill(eta);
+                    hy_protons_plus.Fill(y);
+                    if (fabs(y) < rap_cut) {
                     hpt_protons_plus.Fill(pt);
                     hphi_protons_plus.Fill(phi);
+                    }
                     break;
                 case -2212:  // Proton-
-                    hy_protons_minus.Fill(eta);
+                    hy_protons_minus.Fill(y);
+                    if (fabs(y) < rap_cut) {
                     hpt_protons_minus.Fill(pt);
                     hphi_protons_minus.Fill(phi);
+                    }
                     break;
                 case 3122:  // Lambda+
-                    hy_lambda_plus.Fill(eta);
+                    hy_lambda_plus.Fill(y);
+                    if (fabs(y) < rap_cut) {
                     hpt_lambda_plus.Fill(pt);
                     hphi_lambda_plus.Fill(phi);
+                    }
                     break;
                 case -3122:  // Lambda-
-                    hy_lambda_minus.Fill(eta);
+                    hy_lambda_minus.Fill(y);
+                    if (fabs(y) < rap_cut) {
                     hpt_lambda_minus.Fill(pt);
                     hphi_lambda_minus.Fill(phi);
+                    }
                     break;
                 case 3222:  // Sigma+
-                    hy_sigma_plus.Fill(eta);
+                    hy_sigma_plus.Fill(y);
+                    if (fabs(y) < rap_cut) {
                     hpt_sigma_plus.Fill(pt);
                     hphi_sigma_plus.Fill(phi);
+                    }
                     break;
                 case 3112:  // Sigma-
-                    hy_sigma_minus.Fill(eta);
+                    hy_sigma_minus.Fill(y);
+                    if (fabs(y) < rap_cut) {
                     hpt_sigma_minus.Fill(pt);
                     hphi_sigma_minus.Fill(phi);
+                    }
                     break;
                 case 3334:  // Omega
-                    hy_omega.Fill(eta);
+                    hy_omega.Fill(y);
+                    if (fabs(y) < rap_cut) {
                     hpt_omega.Fill(pt);
                     hphi_omega.Fill(phi);
+                    }
                     break;
                 default:
                     break;
             }
-            for (int in = 1; in <= n_qvec_max; ++in) {
-                if (fabs(pdgcode.charge()) > 1.E-4) {
-                    hReQ_charged[in - 1].Fill(eta, cos(in * phi));
-                    hImQ_charged[in - 1].Fill(eta, sin(in * phi));
+            
+            if ((pt > 0.15) && (pt < 2.0)){
+            for (int in = 1; in <= n_qvec_max; ++in) {   
+                if(fabs(eta) < rap_cut){
+  
+                    if (fabs(pdgcode.charge()) > 1.E-4) {
+                        hReQ_charged[in - 1].Fill(eta, cos(in * phi));
+                        hImQ_charged[in - 1].Fill(eta, sin(in * phi));
+                        //if in==1, store the multiplicity (in==1 to avoid double counting)
+                        if (in == 1) {
+                            hN_charge.Fill(0.5, 1.0);
+                        }
+                    }
                 }
-        
-                switch (id) {
-                    case -211:  // Pion-
-                        hReQ_pions_minus[in - 1].Fill(eta, cos(in * phi));
-                        hImQ_pions_minus[in - 1].Fill(eta, sin(in * phi));
-                        break;
-                    case 211:  // Pion+
-                        hReQ_pions_plus[in - 1].Fill(eta, cos(in * phi));
-                        hImQ_pions_plus[in - 1].Fill(eta, sin(in * phi));
-                        break;
-                    case 2212:  // Proton+
-                        hReQ_protons_plus[in - 1].Fill(eta, cos(in * phi));
-                        hImQ_protons_plus[in - 1].Fill(eta, sin(in * phi));
-                        break;
-                    case -2212:  // Proton-
-                        hReQ_protons_minus[in - 1].Fill(eta, cos(in * phi));
-                        hImQ_protons_minus[in - 1].Fill(eta, sin(in * phi));
-                        break;
-                    case 3122:  // Lambda+
-                        hReQ_lambda_plus[in - 1].Fill(eta, cos(in * phi));
-                        hImQ_lambda_plus[in - 1].Fill(eta, sin(in * phi));
-                        break;
-                    case -3122:  // Lambda-
-                        hReQ_lambda_minus[in - 1].Fill(eta, cos(in * phi));
-                        hImQ_lambda_minus[in - 1].Fill(eta, sin(in * phi));
-                        break;
-                    case 3222:  // Sigma+
-                        hReQ_sigma_plus[in - 1].Fill(eta, cos(in * phi));
-                        hImQ_sigma_plus[in - 1].Fill(eta, sin(in * phi));
-                        break;
-                    case 3112:  // Sigma-
-                        hReQ_sigma_minus[in - 1].Fill(eta, cos(in * phi));
-                        hImQ_sigma_minus[in - 1].Fill(eta, sin(in * phi));
-                        break;
-                    case 3334:  // Omega
-                        hReQ_omega[in - 1].Fill(eta, cos(in * phi));
-                        hImQ_omega[in - 1].Fill(eta, sin(in * phi));
-                        break;
-                    default:
-                        break;
-                }
+
+                if(fabs(y) < rap_cut) {
+                 switch (id) {
+                        case -211:  // Pion-
+                            hReQ_pions_minus[in - 1].Fill(eta, cos(in * phi));
+                            hImQ_pions_minus[in - 1].Fill(eta, sin(in * phi));
+                            if (in == 1) {
+                                hN_pions_minus.Fill(0.5, 1.0);
+                            }
+                            break;
+                        case 211:  // Pion+
+                            hReQ_pions_plus[in - 1].Fill(eta, cos(in * phi));
+                            hImQ_pions_plus[in - 1].Fill(eta, sin(in * phi));
+                            if (in == 1) {
+                                hN_pions_plus.Fill(0.5, 1.0);
+                            }
+                            break;
+                        case 321:  // Kaon+
+                            hReQ_kaons_plus[in - 1].Fill(eta, cos(in * phi));
+                            hImQ_kaons_plus[in - 1].Fill(eta, sin(in * phi));
+                            if (in == 1) {
+                                hN_kaons_plus.Fill(0.5, 1.0);
+                            }
+                            break;
+                        case -321:  // Kaon-
+                            hReQ_kaons_minus[in - 1].Fill(eta, cos(in * phi));
+                            hImQ_kaons_minus[in - 1].Fill(eta, sin(in * phi));
+                            if (in == 1) {
+                                hN_kaons_minus.Fill(0.5, 1.0);
+                            }
+                            break;
+                        case 2212:  // Proton+
+                            hReQ_protons_plus[in - 1].Fill(eta, cos(in * phi));
+                            hImQ_protons_plus[in - 1].Fill(eta, sin(in * phi));
+                            if (in == 1) {
+                                hN_protons_plus.Fill(0.5, 1.0);
+                            }
+                            break;
+                        case -2212:  // Proton-
+                            hReQ_protons_minus[in - 1].Fill(eta, cos(in * phi));
+                            hImQ_protons_minus[in - 1].Fill(eta, sin(in * phi));
+                            if (in == 1) {
+                                hN_protons_minus.Fill(0.5, 1.0);
+                            }
+                            break;
+                        case 3122:  // Lambda+
+                            hReQ_lambda_plus[in - 1].Fill(eta, cos(in * phi));
+                            hImQ_lambda_plus[in - 1].Fill(eta, sin(in * phi));
+                            if (in == 1) {
+                                hN_lambda_plus.Fill(0.5, 1.0);
+                            }
+                            break;
+                        case -3122:  // Lambda-
+                            hReQ_lambda_minus[in - 1].Fill(eta, cos(in * phi));
+                            hImQ_lambda_minus[in - 1].Fill(eta, sin(in * phi));
+                            if (in == 1) {
+                                hN_lambda_minus.Fill(0.5, 1.0);
+                            }
+                            break;
+                        case 3222:  // Sigma+
+                            hReQ_sigma_plus[in - 1].Fill(eta, cos(in * phi));
+                            hImQ_sigma_plus[in - 1].Fill(eta, sin(in * phi));
+                            if (in == 1) {
+                                hN_sigma_plus.Fill(0.5, 1.0);
+                            }
+                            break;
+                        case 3112:  // Sigma-
+                            hReQ_sigma_minus[in - 1].Fill(eta, cos(in * phi));
+                            hImQ_sigma_minus[in - 1].Fill(eta, sin(in * phi));
+                            if (in == 1) {
+                                hN_sigma_minus.Fill(0.5, 1.0);
+                            }
+                            break;
+                        case 3334:  // Omega
+                            hReQ_omega[in - 1].Fill(eta, cos(in * phi));
+                            hImQ_omega[in - 1].Fill(eta, sin(in * phi));
+                            if (in == 1) {
+                                hN_omega.Fill(0.5, 1.0);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                 }
+            } 
             }
+            
         }
     }
     
