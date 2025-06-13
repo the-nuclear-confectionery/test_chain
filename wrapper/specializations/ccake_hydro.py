@@ -19,10 +19,10 @@ class CCAKEHydro(Hydrodynamics):
         print("Base validation for CCAKE started.")
         if grid['step_eta'] > 0:
             print("Step_eta is non-zero, initializing 3D hydro.")
-            self.config['input']['hydrodynamics']['dimensions'] = 3
+            self.config['input']['hydrodynamics']['initial_conditions']['dimension'] = 3
         else:
             print("Step_eta is zero, initializing 2D hydro.")
-            self.config['input']['hydrodynamics']['dimensions'] = 2
+            self.config['input']['hydrodynamics']['initial_conditions']['dimension'] = 2
 
         #check the initial condition path
         if self.config['input']['hydrodynamics']['initial_conditions']['file'] == 'default':
@@ -35,6 +35,13 @@ class CCAKEHydro(Hydrodynamics):
                         os.path.join(self.config['global']['output'], f"event_{event_id}", 'iccing', 'densities0.dat')
                     #set IC type in CCAKE to 'ICCING'
                     self.config['input']['hydrodynamics']['initial_conditions']['type'] = 'ICCING'
+                elif self.config['input']['preequilibrium']['type'] == 'freestreaming':
+                    #check if file is set
+                    print("Reading freestreaming file")
+                    self.config['input']['hydrodynamics']['initial_conditions']['file'] = \
+                        os.path.join(self.config['global']['output'], f"event_{event_id}", 'freestream', 'fs.dat')
+
+                    self.config['input']['hydrodynamics']['initial_conditions']['type'] = 'ccake'
                 else:
                     #file is the default output of trento
                     self.config['input']['hydrodynamics']['initial_conditions']['file'] = \
@@ -44,15 +51,25 @@ class CCAKEHydro(Hydrodynamics):
                     #set read as entropy
                     #self.config['input']['hydrodynamics']['initial_conditions']['input_as_entropy'] = True
             
-            #check for none initial conditions or overlay
-            if self.config['input']['initial_conditions']['type'] == None and self.config['input']['overlay']['type'] == None:
+
+            #check for AMPT overlay
+            if self.config['input']['overlay']['type'] == 'AMPTGenesis':
+                #file is the AMPT output
+                self.config['input']['hydrodynamics']['initial_conditions']['file'] = \
+                    os.path.join(self.config['global']['output'], f"event_{event_id}", 'amptgenesis', 'ccake_ic.dat')
+                #set IC type in CCAKE to 'AMPT'
+                self.config['input']['hydrodynamics']['initial_conditions']['type'] = 'ccake'
+            
+            #check for none initial conditions or overlay or preequilibrium
+            if self.config['input']['initial_conditions']['type'] == None and self.config['input']['overlay']['type'] == None and self.config['input']['preequilibrium']['type'] == None:
                 #error 
                 raise ValueError("No initial conditions or overlay specified, so initial condition file amd IC type must be specified.")  
+            #check for freestreaming preequilibrium
         else:
             #check if ic type is set. It should always be set if the file is not default
             if self.config['input']['hydrodynamics']['initial_conditions']['type'] == 'default':
                 #error 
-                raise ValueError("Initial condition type must be specified when reading from external file.")
+                raise ValueError("Initial condition type value in CCAKE yaml must be specified when reading from external file.")
             
 
         #check eos path
@@ -88,7 +105,8 @@ class CCAKEHydro(Hydrodynamics):
                 'file': hydrodynamics['initial_conditions']['file'],
                 'dimension': hydrodynamics['initial_conditions']['dimension'],
                 'input_as_entropy': hydrodynamics['initial_conditions']['input_as_entropy'],
-                't0': self.config['global']['tau_hydro']
+                't0': self.config['global']['tau_hydro'],
+                'coordinate_system': hydrodynamics['initial_conditions']['coordinate_system']
             },
             'parameters': {
                 'dt': hydrodynamics['parameters']['dt'],
@@ -97,6 +115,7 @@ class CCAKEHydro(Hydrodynamics):
                 'rk_order': hydrodynamics['parameters']['rk_order'],
                 'kernel_type': hydrodynamics['parameters']['kernel_type'],
                 'energy_cutoff': hydrodynamics['parameters']['energy_cutoff'],
+                'max_tau': hydrodynamics['parameters']['max_tau'],
                 'buffer_particles': {
                     'enabled': hydrodynamics['parameters']['buffer_particles']['enabled'],
                     'circular': hydrodynamics['parameters']['buffer_particles']['circular'],
@@ -105,7 +124,9 @@ class CCAKEHydro(Hydrodynamics):
             },
             'eos': {
                 'type': hydrodynamics['eos']['type'],
-                'path': hydrodynamics['eos']['path']
+                'path': hydrodynamics['eos']['path'],
+                'online_inverter_enabled': hydrodynamics['eos']['online_inverter_enabled'],
+                'preinverted_eos_path': hydrodynamics['eos']['preinverted_eos_path']
             },
             'particlization': {
                 'enabled': hydrodynamics['particlization']['enabled'],
@@ -135,7 +156,9 @@ class CCAKEHydro(Hydrodynamics):
             'output': {
                 'print_conservation_state': hydrodynamics['output']['print_conservation_state'],
                 'hdf_evolution': hydrodynamics['output']['hdf_evolution'],
-                'txt_evolution': hydrodynamics['output']['txt_evolution']
+                'txt_evolution': hydrodynamics['output']['txt_evolution'],
+                'calculate_observables': hydrodynamics['output']['calculate_observables'],
+                'check_causality': hydrodynamics['output']['check_causality'],
             }
         }
 
@@ -154,11 +177,17 @@ class CCAKEHydro(Hydrodynamics):
         output_dir = os.path.join(self.config['global']['output'], f"event_{event_id}", 'ccake')
         print("Running CCAKE")
         command = f"{ccake_executable} {os.path.join(self.config['global']['output'], f'event_{event_id}', 'configs', 'ccake.yaml')} {output_dir}"
-        os.system(command)
+        #os.system(command)
+        subprocess.run([ccake_executable, 
+                os.path.join(self.config['global']['output'], f'event_{event_id}', 'configs', 'ccake.yaml'), 
+                output_dir], check=True)
+
         #insert into db
         insert_hydro(self.db_connection, 
                      event_id=event_id, 
+                     initial_time=self.config['global']['tau_hydro'],
+                     freeze_out_temperature=self.config['input']['hydrodynamics']['particlization']['T'],
+                     dimensions= self.config['input']['hydrodynamics']['initial_conditions']['dimension'],
                      hydro_type=self.config['input']['hydrodynamics']['type'],
-                     dimensions= self.config['input']['hydrodynamics']['dimensions']
                      )
      

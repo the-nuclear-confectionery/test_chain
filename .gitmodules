@@ -17,3 +17,9 @@
 	path = models/ICCING
 	url = git@github.com:the-nuclear-confectionery/ICCING.git
 	branch =  dba17456a1a213ffc36399548064fef02096aff4
+[submodule "models/AMPTGenesis"]
+	path = models/AMPTGenesis
+	url = git@github.com:USPHydro/AMPTGenesis.git
+[submodule "models/freestream"]
+	path = models/freestream
+	url = git@github.com:Duke-QCD/freestream.git

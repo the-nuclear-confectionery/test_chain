@@ -9,10 +9,11 @@ def initialize_database(db_path):
     CREATE TABLE IF NOT EXISTS events (
         event_id INTEGER PRIMARY KEY,
         collision_id INTEGER,
-        entropy REAL,
+        centrality_estimator REAL,
         output_path TEXT,
         ic_type TEXT,
         overlay_type TEXT,
+        preequilibrium_type TEXT,
         hydro_type TEXT,
         particlization_type TEXT,
         afterburner_type TEXT,
@@ -27,10 +28,7 @@ def initialize_database(db_path):
     CREATE TABLE IF NOT EXISTS initial_conditions (
         event_id INTEGER PRIMARY KEY,
         seed INTEGER,
-        eps2 REAL,
-        eps3 REAL,
-        eps4 REAL,
-        eps5 REAL,
+        seed2 INTEGER,
         ic_type TEXT,
         FOREIGN KEY(event_id) REFERENCES events(event_id)
     )
@@ -41,11 +39,18 @@ def initialize_database(db_path):
     CREATE TABLE IF NOT EXISTS overlays (
         event_id INTEGER PRIMARY KEY,
         seed INTEGER,
-        eps2 REAL,
-        eps3 REAL,
-        eps4 REAL,
-        eps5 REAL,
         overlay_type TEXT,
+        FOREIGN KEY(event_id) REFERENCES events(event_id)
+    )
+    ''')
+    
+    # Create preequilibrium table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS preequilibrium (
+        event_id INTEGER PRIMARY KEY,
+        seed INTEGER,
+        time REAL,
+        preequilibrium_type TEXT,
         FOREIGN KEY(event_id) REFERENCES events(event_id)
     )
     ''')
@@ -54,8 +59,10 @@ def initialize_database(db_path):
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS hydro (
         event_id INTEGER PRIMARY KEY,
-        hydro_type TEXT,
+        initial_time REAL,
+        freeze_out_temperature REAL,
         dimensions INTEGER,
+        hydro_type TEXT,
         FOREIGN KEY(event_id) REFERENCES events(event_id)
     )
     ''')
@@ -131,28 +138,36 @@ def insert_event(connection, event_id, output_path, collision_id, yaml_config_pa
     ''', (event_id, collision_id, output_path, yaml_config_path))
     connection.commit()
 
-def insert_initial_condition(connection, event_id, seed, eps2, eps3, eps4, eps5, ic_type):
+def insert_initial_condition(connection, event_id, seed, seed2, ic_type):
     cursor = connection.cursor()
     cursor.execute('''
-    INSERT OR REPLACE INTO initial_conditions (event_id, seed, eps2, eps3, eps4, eps5, ic_type)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (event_id, seed, eps2, eps3, eps4, eps5, ic_type))
+    INSERT OR REPLACE INTO initial_conditions (event_id, seed, seed2, ic_type)
+    VALUES (?, ?, ?, ?)
+    ''', (event_id, seed, seed2, ic_type))
     connection.commit()
 
-def insert_overlay(connection, event_id, seed, eps2, eps3, eps4, eps5, overlay_type):
+def insert_overlay(connection, event_id, seed, overlay_type):
     cursor = connection.cursor()
     cursor.execute('''
-    INSERT OR REPLACE INTO overlays (event_id, seed, eps2, eps3, eps4, eps5, overlay_type)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (event_id, seed, eps2, eps3, eps4, eps5, overlay_type))
-    connection.commit()
-
-def insert_hydro(connection, event_id, hydro_type, dimensions):
-    cursor = connection.cursor()
-    cursor.execute('''
-    INSERT OR REPLACE INTO hydro (event_id, hydro_type, dimensions)
+    INSERT OR REPLACE INTO overlays (event_id, seed, overlay_type)
     VALUES (?, ?, ?)
-    ''', (event_id, hydro_type, dimensions))
+    ''', (event_id, seed, overlay_type))
+    connection.commit()
+
+def insert_preequilibrium(connection, event_id, seed,time , preequilibrium_type):
+    cursor = connection.cursor()
+    cursor.execute('''
+    INSERT OR REPLACE INTO preequilibrium (event_id, seed, time, preequilibrium_type)
+    VALUES (?, ?, ?, ?)
+    ''', (event_id, seed, time, preequilibrium_type))
+    connection.commit()
+                          
+def insert_hydro(connection, event_id, initial_time, freeze_out_temperature, dimensions, hydro_type):
+    cursor = connection.cursor()
+    cursor.execute('''
+    INSERT OR REPLACE INTO hydro (event_id, initial_time, freeze_out_temperature, dimensions, hydro_type)
+    VALUES (?, ?, ?, ?, ?)
+    ''', (event_id, initial_time, freeze_out_temperature, dimensions, hydro_type))
     connection.commit()
 
 def insert_particlization(connection, event_id, seed,particlization_type, nsamples):
@@ -179,11 +194,11 @@ def insert_analysis(connection, event_id, analysis_type, rapidity_cut):
     ''', (event_id, analysis_type, rapidity_cut))
     connection.commit()
 
-def update_event_entropy(connection, event_id, entropy):
+def update_event_centrality_estimator(connection, event_id, centrality_estimator):
     cursor = connection.cursor()
     cursor.execute('''
-    UPDATE events SET entropy = ? WHERE event_id = ?
-    ''', (entropy, event_id))
+    UPDATE events SET centrality_estimator = ? WHERE event_id = ?
+    ''', (centrality_estimator, event_id))
     connection.commit()
 
 def update_ic_type(connection, event_id, ic_type):
@@ -198,6 +213,13 @@ def update_overlay_type(connection, event_id, overlay_type):
     cursor.execute('''
     UPDATE events SET overlay_type = ? WHERE event_id = ?
     ''', (overlay_type, event_id))
+    connection.commit()
+
+def update_preequilibrium_type(connection, event_id, preequilibrium_type):
+    cursor = connection.cursor()
+    cursor.execute('''
+    UPDATE events SET preequilibrium_type = ? WHERE event_id = ?
+    ''', (preequilibrium_type, event_id))
     connection.commit()
 
 def update_hydro_type(connection, event_id, hydro_type):

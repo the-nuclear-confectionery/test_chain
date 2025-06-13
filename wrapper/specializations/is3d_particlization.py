@@ -26,9 +26,9 @@ class iS3DParticlization(Particlization):
                 #set config 
                 self.config['input']['particlization']['parameters']['input_file']  = surface_file
             #check for hydro dimensions
-            if self.config['input']['hydrodynamics']['dimensions'] == 2:
+            if self.config['input']['hydrodynamics']['initial_conditions']['dimension'] == 2:
                 self.config['input']['particlization']['parameters']['mode'] = 8
-            elif self.config['input']['hydrodynamics']['dimensions'] == 3:
+            elif self.config['input']['hydrodynamics']['initial_conditions']['dimension'] == 3:
                 self.config['input']['particlization']['parameters']['mode'] = 9
             else:
                 raise ValueError("Hydro dimensions must be 2 or 3 for iS3D particlization.")

@@ -1,5 +1,5 @@
 // Restored and expanded version of the code with calculations for the original and new histograms
-// Author: Willian M. Serenone
+// Author: Willian M. Serenone, Kevin P. Pala
 
 #include "TTree.h"
 #include "TH1.h"

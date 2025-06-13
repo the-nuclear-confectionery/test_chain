@@ -2,15 +2,15 @@ import os
 from utils.db import insert_initial_condition, insert_event, insert_collision_system
 
 class InitialCondition:
-    entropy = 0.0
+    centrality_estimator = 0.0
 
     def __init__(self, config, db_connection):
         self.config = config
         self.db_connection = db_connection
 
     
-    def get_entropy(self):
-        return self.entropy
+    def get_centrality_estimator(self):
+        return self.centrality_estimator
     
     def write_ic(self, output_file, x, y, eta, e, rhoB, rhoS, rhoQ, ux, uy, ueta, 
                   bulk, pixx, pixy, pixeta, piyy, piyeta, pietaeta, 

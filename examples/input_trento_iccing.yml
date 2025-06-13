@@ -1,7 +1,7 @@
 global:
-  output: /u/kpala/git_repos/test_chain/results
-  tmp: /u/kpala/git_repos/test_chain/tmp
-  basedir: /u/kpala/git_repos/test_chain
+  output: <path_to_output>
+  tmp: <path_to_tmp>
+  basedir: <path_to_basedir>
   nevents: 1
   grid:
     x_max: 12.0
@@ -44,22 +44,22 @@ input:
     output:
       txt_evolution: false
       hdf_evolution: false
+    eos:
+      online_inverter_enabled: true
 
   particlization:
     type: is3d
     parameters:
-      mode: 8
       oversample: 1
       max_num_samples: 1
   
- afterburner:
-   type: smash
-   parameters:
-     decays_only: true
+  afterburner:
+    type: smash
+    parameters:
+      decays_only: true
           
 
   analysis:
     type: hepmc3
     parameters:
       rapidiy_cut: 0.5
-      

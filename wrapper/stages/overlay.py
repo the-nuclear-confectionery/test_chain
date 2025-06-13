@@ -1,5 +1,5 @@
 class Overlay:
-    entropy = 0.0
+    centrality_estimator = 0.0
 
     def __init__(self, config, db_connection):
         self.config = config
@@ -17,6 +17,6 @@ class Overlay:
     def run(self, event_id):
         raise NotImplementedError("Subclasses should implement this method.")
     
-    def get_entropy(self):
-        return self.entropy
+    def get_centrality_estimator(self):
+        return self.centrality_estimator
         

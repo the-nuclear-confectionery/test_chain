@@ -1,25 +1,29 @@
 from utils.input_file import InputFile
 from specializations.trento_initial_condition import TrentoInitialCondition
 from specializations.ICCING_overlay import ICCINGOverlay
+from specializations.freestreaming_preequilibrium import Freestreaming
 from specializations.ccake_hydro import CCAKEHydro
 from specializations.is3d_particlization import iS3DParticlization
 from specializations.smash_afterburner import SMASHAfterburner
 from specializations.hepmc3_analysis import HepMC3Analysis
+from specializations.ampt_initial_condition import AmptInitialCondition
+from specializations.amptgenesis_overlay import AmptGenesisOverlay
 from specializations.none_hydro import NoneHydro
 from specializations.none_initial_condition import NoneInitialCondition
 from specializations.none_overlay import NoneOverlay
+from specializations.none_preequilibrium import NonePreequilibrium
 from specializations.none_particlization import NoneParticlization
 from specializations.none_afterburner import NoneAfterburner
 from specializations.none_analysis import NoneAnalysis
 from utils.validate_collision_system import CollisionSystem
-from utils.db import initialize_database, insert_event, update_event_entropy, update_ic_type, update_overlay_type\
-                    , update_hydro_type, update_particlization_type, update_afterburner_type, update_analysis_type
+from utils.db import initialize_database, insert_event, update_event_centrality_estimator, update_ic_type, update_overlay_type\
+                    , update_hydro_type, update_particlization_type, update_afterburner_type, update_analysis_type, update_preequilibrium_type
 import argparse
 import os
 import shutil
 
 def main():
-    entropy = None
+    centrality_estimator = None
 
     parser = argparse.ArgumentParser(description="Run initial condition generation and overlay for a specific event.")
     parser.add_argument('event_id', type=int, help="Event ID to run.")
@@ -39,23 +43,43 @@ def main():
     #copy tables dir to tmp dir with rsync
     os.system(f"rsync -a {tables_dir} {os.path.join(config['global']['tmp'], f'event_{args.event_id}')}/") 
     
+    #copy config to output dir
+    shutil.copy(args.config_path, os.path.join(config['global']['output'], f"event_{args.event_id}", "config.yml"))
 
     collision_system = CollisionSystem(config, db_connection)
     collision_id = collision_system.insert_collision_system()
-    # Insert event (without entropy yet)
+    # Insert event (without centrality_estimator yet)
     insert_event(
         db_connection,
         args.event_id,
         config['global']['output']+"/event_" + str(args.event_id),
         collision_id,
-        args.config_path
+        os.path.join(config['global']['output'], f"event_{args.event_id}", "config.yml")
     )
 
-    # Detect and initialize initial condition automatically
+    # Detect and initialize the modules
     ic_type = config['input'].get('initial_conditions', {}).get('type', 'none').lower()
+    overlay_type = config['input'].get('overlay', {}).get('type', 'none').lower()
+    preequilibrium_type = config['input'].get('preequilibrium', {}).get('type', 'none').lower()
+    hydro_type = config['input'].get('hydrodynamics', {}).get('type', 'none').lower()
+    particlization_type = config['input'].get('particlization', {}).get('type', 'none').lower()
+    afterburner_type = config['input'].get('afterburner', {}).get('type', 'none').lower()
+    analysis_type = config['input'].get('analysis', {}).get('type', 'none').lower()
+
+    #report the simulation chain stages and how it will be executed
+    print(f"Running simulation chain for event {args.event_id}:")
+    print(f"Initial Condition: {ic_type}")
+    print(f"Overlay: {overlay_type}")
+    print(f"Preequilibrium: {preequilibrium_type}")
+    print(f"Hydrodynamics: {hydro_type}")
+    print(f"Particlization: {particlization_type}")
+    print(f"Afterburner: {afterburner_type}")
+    print(f"Analysis: {analysis_type}")
 
     if ic_type == 'trento':
         initial_condition = TrentoInitialCondition(config, db_connection)
+    elif ic_type == 'ampt':
+        initial_condition = AmptInitialCondition(config, db_connection)
     elif ic_type == 'none':
         initial_condition = NoneInitialCondition(config, db_connection)
         config['input']['initial_conditions']['type'] = None
@@ -65,13 +89,15 @@ def main():
     initial_condition.validate()
     initial_condition.run(args.event_id)
     update_ic_type(db_connection, args.event_id, ic_type)
-    entropy = initial_condition.get_entropy()
+    centrality_estimator = initial_condition.get_centrality_estimator()
+    update_event_centrality_estimator(db_connection, args.event_id, centrality_estimator)
     # Detect overlay automatically
-    overlay_type = config['input'].get('overlay', {}).get('type', 'none').lower()
+
 
     if overlay_type == 'iccing':
         overlay_stage = ICCINGOverlay(config, db_connection)
-        entropy = initial_condition.get_entropy()
+    elif overlay_type == 'amptgenesis':
+        overlay_stage = AmptGenesisOverlay(config, db_connection)
     elif overlay_type == 'none':
         overlay_stage = NoneOverlay(config, db_connection)
         config['input']['overlay']['type'] = None
@@ -83,7 +109,19 @@ def main():
     overlay_stage.run(args.event_id)
     update_overlay_type(db_connection, args.event_id, overlay_type)
 
-    hydro_type = config['input'].get('hydrodynamics', {}).get('type', 'none').lower()
+
+    if preequilibrium_type == 'freestreaming':
+        preequilibrium_stage = Freestreaming(config, db_connection)
+    elif preequilibrium_type == 'none':
+        preequilibrium_stage = NonePreequilibrium(config, db_connection)
+        config['input']['preequilibrium']['type'] = None
+    else:
+        raise ValueError(f"Unknown preequilibrium type: {preequilibrium_type}")
+    preequilibrium_stage.validate(args.event_id)
+    preequilibrium_stage.run(args.event_id)
+    update_preequilibrium_type(db_connection, args.event_id, preequilibrium_type)
+
+
     if hydro_type == 'ccake':
         hydro_stage = CCAKEHydro(config, db_connection)
     #elif hydro_type == 'music':
@@ -93,14 +131,13 @@ def main():
         config['input']['hydrodynamics']['type'] = None
     else:
         raise ValueError(f"Unknown hydro type: {hydro_type}")
-        update_event_entropy(db_connection, args.event_id, entropy)
+        
 
     hydro_stage.validate(args.event_id)
     hydro_stage.run(args.event_id)
     update_hydro_type(db_connection, args.event_id, hydro_type)
-    # Update entropy in the database
+    # Update centrality_estimator in the database
 
-    particlization_type = config['input'].get('particlization', {}).get('type', 'none').lower()
     if particlization_type == 'is3d':
         particlization_stage = iS3DParticlization(config, db_connection)
     elif particlization_type == 'none':
@@ -116,7 +153,7 @@ def main():
     update_particlization_type(db_connection, args.event_id, particlization_type)
 
 
-    afterburner_type = config['input'].get('afterburner', {}).get('type', 'none').lower()
+
     if afterburner_type == 'none':
         afterburner_stage = NoneAfterburner(config, db_connection)
         config['input']['afterburner']['type'] = None
@@ -131,7 +168,7 @@ def main():
     update_afterburner_type(db_connection, args.event_id, afterburner_type)
 
 
-    analysis_type = config['input'].get('analysis', {}).get('type', 'none').lower()
+
     if analysis_type == 'none':
         analysis_stage = NoneAnalysis(config, db_connection)
         config['input']['analysis']['type'] = None
@@ -146,6 +183,7 @@ def main():
     analysis_stage.run(args.event_id)
 
     update_analysis_type(db_connection, args.event_id, analysis_type)
+
     #remove tmp
     shutil.rmtree(os.path.join(config['global']['tmp'], f"event_{args.event_id}"))
 

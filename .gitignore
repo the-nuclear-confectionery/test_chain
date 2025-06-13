@@ -7,3 +7,5 @@ tables/*
 *.pyc
 *.db
 analysis/build
+models/AMPT
+wrapper/external_packages

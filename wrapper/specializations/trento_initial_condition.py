@@ -57,6 +57,10 @@ class TrentoInitialCondition(InitialCondition):
         output_dir = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento')
         os.makedirs(output_dir, exist_ok=True)
 
+        #check for freeestreaming
+        if self.config['input'].get('preequilibrium', {}).get('type') == 'freestreaming':
+            output_dir = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', 'ic.hdf')
+
         config_dir = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'configs')
         os.makedirs(config_dir, exist_ok=True)
 
@@ -67,8 +71,8 @@ class TrentoInitialCondition(InitialCondition):
         with open(config_file_path, 'w') as f:
             f.write(f"random-seed = {seed}\n")
             f.write(f"projectile = {params['ion_A']['species']}\n")
-            f.write(f"projectile = {params['ion_B']['species']}\n")
-            f.write(f"number-events = {self.config['global']['nevents']}\n")
+            f.write(f"projectile = {params['ion_B']['species']}\n")  # Fixed duplicate "projectile"
+            f.write(f"number-events = {params['number-events']}\n")
             f.write(f"entropy-dict-dir = {params['entropy-dict-dir']}\n")
             f.write(f"output = {output_dir}\n")
             f.write(f"quiet = {str(params['quiet']).lower()}\n")
@@ -80,14 +84,26 @@ class TrentoInitialCondition(InitialCondition):
             f.write(f"fluctuation = {params['fluctuation']}\n")
             f.write(f"fluctuation-type = {params['fluctuation-type']}\n")
             f.write(f"nucleon-width = {params['nucleon-width']}\n")
+            f.write(f"nucleon-width-probability = {params['nucleon-width-probability']}\n")
             f.write(f"constit-width = {params['constit-width']}\n")
             f.write(f"constit-number = {params['constit-number']}\n")
+            f.write(f"nucleon-min-dist = {params['nucleon-min-dist']}\n")
+            f.write(f"number-nucleons = {params['number-nucleons']}\n")
+            f.write(f"woods-saxon-radius = {params['woods-saxon-radius']}\n")
+            f.write(f"woods-saxon-thickness = {params['woods-saxon-thickness']}\n")
+            f.write(f"woods-saxon-omega = {params['woods-saxon-omega']}\n")
+            f.write(f"beta2 = {params['beta2']}\n")
+            f.write(f"beta3 = {params['beta3']}\n")
+            f.write(f"beta4 = {params['beta4']}\n")
+            f.write(f"cross-section = {params['cross-section']}\n")
+            f.write(f"normalization = {params['normalization']}\n")
             f.write(f"b-min = {params['b-min']}\n")
             f.write(f"b-max = {params['b-max']}\n")
             f.write(f"centrality-min = {params['centrality-min']}\n")
             f.write(f"centrality-max = {params['centrality-max']}\n")
             f.write(f"grid-max = {self.config['global']['grid']['x_max']}\n")
             f.write(f"grid-step = {self.config['global']['grid']['step_x']}\n")
+            # f.write(f"reduced-thickness-form = {params['reduced-thickness-form']}\n")
 
         print(f"TRENTo config file created at {config_file_path}")
         return config_file_path
@@ -118,23 +134,24 @@ class TrentoInitialCondition(InitialCondition):
                 self.db_connection,
                 event_id=event_id,
                 seed=seed,
-                eps2=event_data['e2'],
-                eps3=event_data['e3'],
-                eps4=event_data['e4'],
-                eps5=event_data['e5'],
+                seed2=None,
                 ic_type='trento'
             )
-            self.entropy = event_data['s']
-            print("entropy: ", self.entropy)
+            self.centrality_estimator = event_data['s']/self.config['input']['initial_conditions']['parameters']['normalization']
+
+
         #convert to ccake format
         ccake_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'ccake_ic.dat')
         sparse_output = False
-        if self.config['input']['initial_conditions']['parameters']['sparse-output'] == True:
-            sparse_output = True
-            trento_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'ic0.dat')
-        else:
-            trento_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'0.dat')
-        self.convert_to_ccake( trento_ic_path,ccake_ic_path, sparse_output)
+        #check for freestreaming
+        if self.config['input'].get('preequilibrium', {}).get('type') != 'freestreaming':
+            if self.config['input']['initial_conditions']['parameters']['sparse-output'] == True:
+                sparse_output = True
+                trento_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'ic0.dat')
+                
+            else:
+                trento_ic_path = os.path.join(self.config['global']['output'], "event_" + str(event_id), 'trento', f'0.dat')
+            self.convert_to_ccake( trento_ic_path,ccake_ic_path, sparse_output)
 
     def parse_output(self, output_file):
         """Parse the output file to extract entropy and eccentricity information."""
@@ -175,6 +192,7 @@ class TrentoInitialCondition(InitialCondition):
                         'e5': float(fields[7])
                     }
                     events_data.append(event)
+                self.centrality_estimator = event['s']
             except ValueError:
                 continue
 

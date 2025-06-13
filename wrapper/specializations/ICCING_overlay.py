@@ -2,6 +2,7 @@ import os
 import random
 from stages.overlay import Overlay
 from utils.db import insert_overlay
+import subprocess
 
 class ICCINGOverlay(Overlay):
     def __init__(self, config, db_connection):
@@ -34,6 +35,9 @@ class ICCINGOverlay(Overlay):
                 if self.config['input']['overlay']['parameters']['output_type'] != 'sparse':
                     print("Warning: Initial condition output type is sparse, but overlay output type is not. Setting overlay output type to sparse.")
                     self.config['input']['overlay']['parameters']['output_type'] = 'sparse'
+            #set normalization to one, if not set
+            if self.config['input']['initial_conditions']['parameters']['normalization'] != 1.:
+                raise ValueError("Trento normalization must be 1.0 for ICCING overlay.")
         else:
             if self.config['input']['overlay']['parameters']['paths']['trento_results_directory'] == 'default':
                 raise ValueError("trento_results_directory is set to default, but no Trento module is enabled, path to trento results directory must be provided.")
@@ -42,6 +46,9 @@ class ICCINGOverlay(Overlay):
         if self.config['input']['overlay']['parameters']['input_type'] != 'sparse':
             print("Warning: Overlay input type is not sparse, setting it to sparse.")
             self.config['input']['overlay']['parameters']['input_type'] = 'sparse'
+        
+        if self.config['input'].get('preequilibrium', {}).get('type')!= None:
+            raise ValueError("Preequilibrium type must be 'none' when using ICCING overlay.")
 
 
         print("Validation of ICCING overlay configuration completed successfully.")
@@ -134,13 +141,14 @@ class ICCINGOverlay(Overlay):
         #print current dir
         os.system("pwd")
         print(f"Running ICCING overlay with command: {command}")
-        os.system(command)
+        subprocess.run([executable_path, config_file_path], check=True)
+
         #output_file = os.path.join(os.path.dirname(config_file_path), f'iccing_output_{event_id}.txt')
         # Parse the output for eccentricities and insert them into the database
         #eps2, eps3, eps4, eps5 = self.parse_output(output_file)
 
         eps2, eps3, eps4, eps5 = self.parse_output(os.path.join(self.config['global']['output'], f"event_{event_id}", 'iccing', f'energy_eccentricities.dat'))
-        insert_overlay(self.db_connection, event_id, seed, eps2, eps3, eps4, eps5, "ICCING")
+        insert_overlay(self.db_connection, event_id, seed, "ICCING")
 
         print(f"ICCING overlay completed for event {event_id}.")
         
@@ -151,7 +159,7 @@ class ICCINGOverlay(Overlay):
         try:
             with open(output_file, 'r') as f:
                 for line in f:
-                    # Split line into values, ignore event number and total entropy
+                    # Split line into values, ignore event number
                     data = line.strip().split()
                     if len(data) >= 14:  # Ensure enough values exist to parse
                         eps2 = float(data[2])  # 1st harmonic magnitude
