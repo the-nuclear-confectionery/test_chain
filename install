@@ -139,10 +139,10 @@ cmake ..
 make -j8 
 
 # build analysis
-cd $WORKDIR/analysis
+cd $WORKDIR/analysis/qvector_analysis
 mkdir build && cd build
 cmake ..
-make -j8
+make -j8 
 
 
 #build tables directory
