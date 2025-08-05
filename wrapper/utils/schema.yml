@@ -1300,19 +1300,68 @@ properties:
         properties:
           type:
             type: string
-            enum: [hepmc3]
+            enum: [qvector_writter]
           parameters:
             type: object
             properties:
-              input_file:
-                type: string
-                default: default
-                description: "Path to the input file containing freezeout surface data."
-              output_file:
-                type: string
-                default: default
-                description: "Path to the output file for analysis results."
-              rapidity_cut:
+              n_max:
+                type: integer
+                default: 6
+                description: "Maximum harmonic order to compute Q-vectors for."
+      
+              calculate_charged:
+                type: boolean
+                default: true
+                description: "Whether to compute Q-vectors for charged particles."
+      
+              pids:
+                type: array
+                items:
+                  type: integer
+                default: [-211, 211, 321, -321, 2212, -2212, 3122, -3122, 3222, 3112, 3334]
+                description: "List of PIDs for identified particle Q-vector analysis."
+      
+              pt_bins:
+                type: integer
+                default: 120
+                description: "Number of pT bins (ignored if pt_bins_custom is given)."
+      
+              max_pt:
                 type: number
-                default: 0.5
-                description: "Rapidity cut for particle selection."
+                default: 6.0
+                description: "Maximum pT for binning."
+      
+              eta_bins:
+                type: integer
+                default: 108
+                description: "Number of eta bins (ignored if eta_bins_custom is given)."
+      
+              max_eta:
+                type: number
+                default: 5.4
+                description: "Maximum eta for binning."
+      
+              pt_bins_custom:
+                type: array
+                items:
+                  type: number
+                description: "Optional custom bin edges for pT."
+      
+              eta_bins_custom:
+                type: array
+                items:
+                  type: number
+                description: "Optional custom bin edges for eta."
+      
+              input_type:
+                type: string
+                enum: ["smash_hepmc3", "smash_oscar", "afterdecays"]
+                default: "afterdecays"
+                description: "Input format to be parsed."
+      
+              output_type:
+                type: string
+                enum: ["text", "root"]
+                default: "root"
+                description: "Format of output files."
+      

@@ -24,3 +24,7 @@
 [submodule "models/freestream"]
 	path = models/freestream
 	url = git@github.com:Duke-QCD/freestream.git
+[submodule "models/qvector_writter"]
+	path = models/qvector_writter
+	url = git@github.com:the-nuclear-confectionery/qvector_writter.git
+	branch = main

@@ -1,0 +1,20 @@
+calculate_charged: true
+eta_bins: 108
+input_type: smash_hepmc3
+max_eta: 5.4
+max_pt: 6.0
+n_max: 6
+output_type: root
+pids:
+- -211
+- 211
+- 321
+- -321
+- 2212
+- -2212
+- 3122
+- -3122
+- 3222
+- 3112
+- 3334
+pt_bins: 120

@@ -5,7 +5,7 @@ from specializations.freestreaming_preequilibrium import Freestreaming
 from specializations.ccake_hydro import CCAKEHydro
 from specializations.is3d_particlization import iS3DParticlization
 from specializations.smash_afterburner import SMASHAfterburner
-from specializations.hepmc3_analysis import HepMC3Analysis
+from specializations.qvector_writter_analysis import QVectorWritterAnalysis
 from specializations.ampt_initial_condition import AmptInitialCondition
 from specializations.amptgenesis_overlay import AmptGenesisOverlay
 from specializations.none_hydro import NoneHydro
@@ -172,8 +172,8 @@ def main():
     if analysis_type == 'none':
         analysis_stage = NoneAnalysis(config, db_connection)
         config['input']['analysis']['type'] = None
-    elif analysis_type == 'hepmc3':
-        analysis_stage = HepMC3Analysis(config, db_connection)
+    elif analysis_type == 'qvector_writter':
+        analysis_stage = QVectorWritterAnalysis(config, db_connection)
 
     else:
         raise ValueError(f"Unknown analysis type: {analysis_type}")

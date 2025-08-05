@@ -93,7 +93,7 @@ def initialize_database(db_path):
     CREATE TABLE IF NOT EXISTS analysis (
         event_id INTEGER PRIMARY KEY,
         analysis_type TEXT,
-        rapidity_cut REAL,
+        n_max REAL,
         FOREIGN KEY(event_id) REFERENCES events(event_id)
     )
     ''')
@@ -186,12 +186,12 @@ def insert_afterburner(connection, event_id, seed, afterburner_type):
     ''', (event_id, seed, afterburner_type))
     connection.commit()
 
-def insert_analysis(connection, event_id, analysis_type, rapidity_cut):
+def insert_analysis(connection, event_id, analysis_type, n_max):
     cursor = connection.cursor()
     cursor.execute('''
-    INSERT OR REPLACE INTO analysis (event_id, analysis_type, rapidity_cut)
+    INSERT OR REPLACE INTO analysis (event_id, analysis_type, n_max)
     VALUES (?, ?, ?)
-    ''', (event_id, analysis_type, rapidity_cut))
+    ''', (event_id, analysis_type, n_max))
     connection.commit()
 
 def update_event_centrality_estimator(connection, event_id, centrality_estimator):
