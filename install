@@ -132,6 +132,11 @@ cmake .. -DPythia_CONFIG_EXECUTABLE=$PREFIX/pythia8310/bin/pythia8-config -DCMAK
 make -j8
 make install
 
+#build qvector writter
+cd $WORKDIR/models/qvector_writter
+mkdir build && cd build
+cmake ..
+make -j8 
 
 # build analysis
 cd $WORKDIR/analysis
