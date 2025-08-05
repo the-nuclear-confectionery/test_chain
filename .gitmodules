@@ -5,7 +5,7 @@
 [submodule "models/CCAKE"]
 	path = models/CCAKE
 	url = git@github.com:the-nuclear-confectionery/CCAKE.git
-	branch = rework_eom
+	branch = DNMR
 [submodule "models/smash"]
 	path = models/smash
 	url = git@github.com:the-nuclear-confectionery/smash.git
@@ -20,6 +20,7 @@
 [submodule "models/AMPTGenesis"]
 	path = models/AMPTGenesis
 	url = git@github.com:USPHydro/AMPTGenesis.git
+	branch = cartesian
 [submodule "models/freestream"]
 	path = models/freestream
 	url = git@github.com:Duke-QCD/freestream.git
