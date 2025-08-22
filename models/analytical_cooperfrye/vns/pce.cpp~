@@ -1,0 +1,247 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <sstream>
+#include <cmath>
+#include <vector>
+# include "newspline.hpp"
+
+#include "SPH.h"
+#include "int.h"
+#include "global.h"
+
+using namespace std;
+
+int main (int argc, char *argv[])
+{
+
+	int ev0,evf;
+	string resolist,resolist2,vnfile,auxfol;
+	if (argv[1]&&argv[2]&&argv[3]&&argv[4]&&argv[5]&&argv[5])
+	{
+	vnfile=argv[1];
+	
+	stringstream s,s1;
+	s << argv[2];
+	s >> ev0;
+	
+	s1 << argv[3];
+	s1 >> evf;
+	
+	resolist=argv[4];
+	
+	resolist2=argv[5];
+	
+	auxfol=argv[6];
+	
+	}
+	else 
+	{
+	cout << " Error: format needed is inputfile event0 eventfinal reslist1 reslist2" << endl;
+	exit(1);
+	}
+	
+//	start=sin;
+//	end=fin;
+
+	vnfile="input/"+vnfile;
+	string folder;
+        FILE * myfile = fopen (vnfile.c_str(),"r");
+        if(myfile== NULL)
+        {
+  		cout << "Error: input.dat does not exist. \n";
+		exit(1);	
+  	}	
+		
+           char charin[100];
+           fscanf(myfile,"%*s %s \n",charin); // type of equations (ideal, bulk etc)
+           string type=charin;
+           fscanf(myfile,"%*s %s \n",charin); // folder that contains the events
+           folder=charin;
+           fscanf(myfile,"%*s  %s",charin);  // file that contains pt grid
+           string ptpoints=charin;
+           fscanf(myfile,"%s",charin);  // file that contains phi grid
+           string phipoints=charin;
+  	fclose(myfile);
+	cout << "input.dat: Input sucessful!\n";
+	
+	
+	int typ;
+	if (type==ideal)
+		typ=0;
+	else if (type==bulk)
+		typ=1;
+	else if (type==shear)
+		typ=2;
+	else if ((type==shearbulk)||(type==bulkshear))
+		typ=3;
+		
+	string before,after;
+	if (typ==0) before="freezeout_ev";
+  	else if (typ>1) before="sbvfreezeout_ev";
+  	else if (typ==1) before="bvfreezeout_ev";
+  	after=".dat";
+  	
+  	int bcor=0;
+	if (typ>1) bcor=1;
+
+	int N=ev0-evf+1; // determines the total number of events
+	
+	
+           resolist="input/"+resolist;
+	   FILE * myfile3 = fopen (resolist.c_str(),"r");
+	   if(myfile3== NULL)
+	   {
+	  		cout << "Error: "<< resolist << " does not exist. \n";
+			exit(1);	
+	   }	
+           
+           int sub;
+           vector <int> hl;
+           while(fscanf(myfile3,"%i",&sub)==1)
+           {
+           	
+           	  
+           	hl.push_back(sub);
+           }
+           fclose(myfile3); 
+           
+           
+           resolist2="input/"+resolist2;
+	   FILE * myfile4 = fopen (resolist2.c_str(),"r");
+	   if(myfile3== NULL)
+	   {
+	  		cout << "Error: "<< resolist2 << " does not exist. \n";
+			exit(1);	
+	   }	
+           
+           
+           vector <int> hl2;
+           while(fscanf(myfile4,"%i",&sub)==1)
+           {
+           	
+           	  
+           	hl2.push_back(sub);
+           }
+           fclose(myfile4); 
+           
+           
+  	
+	int ptmax=0;
+	int phimax=0;
+	FILE * myfile = fopen (ptpoints.c_str(),"r");
+	
+	if (myfile==NULL) 
+	{
+	cout << "Error: Can't open Event " << ptpoints << endl;
+	exit(1);
+	}
+	double ptsub;
+	while(fscanf(myfile,"%lf %*f", &ptsub)==1){
+	   ptmax++;}
+        fclose(myfile);
+        
+        
+        
+	FILE * myfile2 = fopen (phipoints.c_str(),"r");
+	if (myfile2==NULL) 
+	{
+	cout << "Error: Can't open Event " << phipoints << endl;
+	exit(1);
+	}
+	
+	double phisub;
+	while(fscanf(myfile2,"%lf %*f", &phisub)==1){
+           	phimax++;}
+        fclose(myfile2);
+        
+        
+        
+        for(int ev=ev0;ev<=evf;ev++){
+        
+        string eout="out/"+folder+"/ev"+convertInt(cev)+"pce_dNdphidpp.dat";
+        ofstream mout(eout.c_str());	
+	if (!mout.is_open()) 
+	{
+	cout << "Error: Can't open Event " << ev << endl;
+	exit(1);
+	}
+        myout.close();
+        
+        
+        readin2(ev,eout,folder,hl);
+        readin2(ev,eout,auxfol,hl2);
+        }
+        
+
+
+}
+
+
+
+
+// reads in the basic information from "input.dat" such at the number of events, events folder, particles to observe etc.
+template <int D,int DD>
+void SPH<D,DD>::readin2(int cev, string eout, string folder, vector<int> hl)
+{
+
+	
+
+
+	string ty;
+	if (typ==0) ty="i";
+	else if (typ==1) ty="bvc";
+	else if (typ==3) ty="sbvc";
+	
+
+
+	string event="out/"+folder+"/ev"+convertInt(cev)+ty+"_dNdphidpp.dat";
+	
+	
+	ifstream myfile(event.c_str() );	
+	if (!myfile.is_open()) 
+	{
+	cout << "Error: Can't open Event " << cev << endl;
+	exit(1);
+	}
+	
+	ofstream myfile2(eout.c_str(),std::ofstream::out | std::ofstream::app );	
+	if (!myfile2.is_open()) 
+	{
+	cout << "Error: Can't open Event " << cev << endl;
+	exit(1);
+	}
+	
+	
+	int nid;
+	while (myfile >> nid ){
+	
+	int on=0;
+	int hs=hl.size();
+	for (int j=0;j<hs;j++) {
+	if (nid==hl[j]){
+	 on=1;
+	 myfile2 << nid << endl;
+	 }
+	}
+	
+	for(int i=0;i<phimax;i++)
+	{
+	string line;
+	getline(myfile,line)
+	if (on==1) myfile2 << line << endl;
+	}
+	
+	}
+	myfile.close();
+	myfile2.close();
+	
+	
+	
+	
+	
+	
+}

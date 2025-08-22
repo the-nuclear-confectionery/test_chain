@@ -1,6 +1,6 @@
 global:
-  output: test
-  tmp: tmp
+  output: /projects/beqi/kpala/conv_sph_k
+  tmp: /projects/beqi/kpala/conv_sph_k
   basedir: /u/kpala/git_repos/paper/test_chain
   nevents: 1
   grid:
@@ -20,10 +20,20 @@ global:
 input:
 
 
+  afterburner:
+    type: smash
+    parameters:
+      decays_only: true
+      input_file: /projects/beqi/kpala/conv_sph_k/12.dat
+      General:
+        Nevents: 5000
+      Output:
+        Particles:
+          Format: [ "HepMC_treeroot"]
   analysis:
     type: qvector_writter
     parameters:
-      input_file: /projects/beqi/kpala/conv_sph3/event_1518/smash/SMASH_HepMC_particles.root                       
+      input_file: default                    
       output_file: default                   
       config_file: default 
                       

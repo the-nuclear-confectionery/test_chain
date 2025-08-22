@@ -1,0 +1,5 @@
+#!/bin/bash 
+./vns/fo "$2" "$3" pi+.dat
+cd out
+c++ main.cpp
+./a.out "$2" "$3"

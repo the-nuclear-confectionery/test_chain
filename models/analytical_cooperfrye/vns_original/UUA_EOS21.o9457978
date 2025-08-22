@@ -1,0 +1,30 @@
+----------------------------------------
+Begin Torque Prologue (Fri Sep  6 16:26:03 2019)
+Job ID:           9457978.cc-mgmt1.campuscluster.illinois.edu
+Username:         jnorhos
+Group:            jnorhos
+Job Name:         UUA_EOS21
+Limits:           walltime=00:30:00,nodes=1:ppn=1,neednodes=1:ppn=1
+Job Queue:        secondary
+Account:          physics1
+Nodes:            golub186
+End Torque Prologue
+----------------------------------------
+rm: cannot remove '/projects/jnorhos/v-USPhydro2/df/vns/logs/*': No such file or directory
+rm: cannot remove '/projects/jnorhos/v-USPhydro2/df/vns/runs/*': No such file or directory
+/var/spool/torque/mom_priv/jobs/9457978.cc-mgmt1.campuscluster.illinois.edu.SC: line 25: logs/RUNID_0.dat: No such file or directory
+/var/spool/torque/mom_priv/jobs/9457978.cc-mgmt1.campuscluster.illinois.edu.SC: line 25: logs/RUNID_1.dat: No such file or directory
+----------------------------------------
+Begin Torque Epilogue (Fri Sep  6 16:26:03 2019)
+Job ID:           9457978.cc-mgmt1.campuscluster.illinois.edu
+Username:         jnorhos
+Group:            jnorhos
+Job Name:         UUA_EOS21
+Session:          76141
+Limits:           walltime=00:30:00,nodes=1:ppn=1,neednodes=1:ppn=1
+Resources:        cput=00:00:00,vmem=0kb,walltime=00:00:01,mem=0kb,energy_used=0
+Job Queue:        secondary
+Account:          physics1
+Nodes:            golub186
+End Torque Epilogue
+----------------------------------------

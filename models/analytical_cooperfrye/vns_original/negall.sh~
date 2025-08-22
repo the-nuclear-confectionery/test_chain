@@ -1,0 +1,43 @@
+#!/bin/bash 
+
+ ./neg.sh mide3 1 150 glb
+ ./neg.sh 30mide2 1 150 glb
+ ./neg.sh 30mide3 1 150 glb
+ 
+ ./neg.sh mide2_eta2 1 150 glb
+ ./neg.sh mide3_eta2 1 150 glb
+ ./neg.sh 30mide2_eta2 1 150 glb
+ ./neg.sh 30mide3_eta2 1 150 glb
+ 
+ ./neg.sh mide2_eta08 1 150 glb
+ ./neg.sh mide3_eta08 1 150 glb
+ ./neg.sh 30mide2_eta08 1 150 glb
+ ./neg.sh 30mide3_eta08 1 150 glb
+ 
+./vns/fo glbinputmide2neg.dat 1 150 all lhc 2
+./vns/fo glbinputmide3neg.dat 1 150 all lhc 2
+./vns/fo glbinputmide2_eta2neg.dat 1 150 all lhc 2
+./vns/fo glbinputmide3_eta2neg.dat 1 150 all lhc 2
+./vns/fo glbinputmide2_eta08neg.dat 1 150 all lhc 2
+./vns/fo glbinputmide3_eta08neg.dat 1 150 all lhc 2
+./vns/fo glbinput30mide2neg.dat 1 150 all lhc 2
+./vns/fo glbinput30mide3neg.dat 1 150 all lhc 2
+./vns/fo glbinput30mide2_eta2neg.dat 1 150 all lhc 2
+./vns/fo glbinput30mide3_eta2neg.dat 1 150 all lhc 2
+./vns/fo glbinput30mide2_eta08neg.dat 1 150 all lhc 2
+./vns/fo glbinput30mide3_eta08neg.dat 1 150 all lhc 2
+
+cp out/glauber/lhc/ideal/5all/mide2/int_allnegND.dat ec_selection_glb_lhc/0-5%/idealnegND_v2.dat 
+cp out/glauber/lhc/ideal/5all/mide3/int_allnegND.dat ec_selection_glb_lhc/0-5%/idealnegND_v3.dat 
+cp out/glauber/lhc/ideal/30all/mide2/int_allnegND.dat ec_selection_glb_lhc/20-30%/idealnegND_v2.dat 
+cp out/glauber/lhc/ideal/30all/mide3/int_allnegND.dat ec_selection_glb_lhc/20-30%/idealnegND_v3.dat 
+
+cp out/glauber/lhc/shear/5all/mide2/int_allnegND.dat ec_selection_glb_lhc/0-5%/eta=0.2negND_v2.dat 
+cp out/glauber/lhc/shear/5all/mide3/int_allnegND.dat ec_selection_glb_lhc/0-5%/eta=0.2negND_v3.dat 
+cp out/glauber/lhc/shear/30all/mide2/int_allnegND.dat ec_selection_glb_lhc/20-30%/eta=0.2negND_v2.dat 
+cp out/glauber/lhc/shear/30all/mide3/int_allnegND.dat ec_selection_glb_lhc/20-30%/eta=0.2negND_v3.dat 
+
+cp out/glauber/lhc/shear/5all/mide2_0.08/int_allnegND.dat ec_selection_glb_lhc/0-5%/eta=0.08negND_v2.dat 
+cp out/glauber/lhc/shear/5all/mide3_0.08/int_allnegND.dat ec_selection_glb_lhc/0-5%/eta=0.08negND_v3.dat 
+cp out/glauber/lhc/shear/30all/mide2_0.08/int_allnegND.dat ec_selection_glb_lhc/20-30%/eta=0.08negND_v2.dat 
+cp out/glauber/lhc/shear/30all/mide3_0.08/int_allnegND.dat ec_selection_glb_lhc/20-30%/eta=0.08negND_v3.dat 

@@ -1,0 +1,29 @@
+----------------------------------------
+Begin Torque Prologue (Fri Sep  6 16:37:20 2019)
+Job ID:           9458018.cc-mgmt1.campuscluster.illinois.edu
+Username:         jnorhos
+Group:            jnorhos
+Job Name:         UUA_EOS21
+Limits:           walltime=00:30:00,nodes=1:ppn=1,neednodes=1:ppn=1
+Job Queue:        secondary
+Account:          physics1
+Nodes:            golub311
+End Torque Prologue
+----------------------------------------
+rm: cannot remove '/projects/jnorhos/v-USPhydro2/df/vns/logs/*': No such file or directory
+rm: cannot remove '/projects/jnorhos/v-USPhydro2/df/vns/runs/*': No such file or directory
+/var/spool/torque/mom_priv/jobs/9458018.cc-mgmt1.campuscluster.illinois.edu.SC: line 23: ((: i<=: syntax error: operand expected (error token is "<=")
+----------------------------------------
+Begin Torque Epilogue (Fri Sep  6 16:37:20 2019)
+Job ID:           9458018.cc-mgmt1.campuscluster.illinois.edu
+Username:         jnorhos
+Group:            jnorhos
+Job Name:         UUA_EOS21
+Session:          67216
+Limits:           walltime=00:30:00,nodes=1:ppn=1,neednodes=1:ppn=1
+Resources:        cput=00:00:00,vmem=81364kb,walltime=00:00:02,mem=1264kb,energy_used=0
+Job Queue:        secondary
+Account:          physics1
+Nodes:            golub311
+End Torque Epilogue
+----------------------------------------

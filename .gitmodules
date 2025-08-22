@@ -32,3 +32,6 @@
 	path = analysis/qvector_analysis
 	url = git@github.com:the-nuclear-confectionery/qvector_analysis.git
 	branch = main
+[submodule "models/decays"]
+	path = models/decays
+	url = git@github.com:the-nuclear-confectionery/decays.git

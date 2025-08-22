@@ -1,0 +1,16 @@
+* INSTRUCTIONS TO RUN THE FO, DECAY, AND VNS *
+
+** FREEZE-OUT **
+
+
+** DECAYS **
+./decays/reso out/jordi/ev0/ev0sbvc_dNdphidpp.dat out/jordi/ev0/ev0dsbvc_dNdphidpp.dat reso16.inp
+
+** VNS **
+*** WITHOUT DECAYS ***
+./vns/fo dfinput_0.dat 0 0 chgv1.dat 0.2 3 0
+
+*** WITH DECAYS ***
+./vns/fo dfinput_0.dat 0 0 chgv1.dat 0.2 3 1
+
+

@@ -1,0 +1,20 @@
+#ifndef GLOBAL_H_ 
+#define GLOBAL_H_
+
+#include <cmath>
+#include <vector>
+#include <stdio.h>
+#include <iostream>
+
+struct SPEC{
+double pt;
+double phi;
+double dNdpt;
+double wpt;
+double wphi;
+};
+
+extern std::vector<SPEC> spec; 
+
+
+#endif
