@@ -38,3 +38,4 @@
 [submodule "models/BQSSampler"]
 	path = models/BQSSampler
 	url = git@github.com:the-nuclear-confectionery/BQSSampler.git
+	branch = conserved
