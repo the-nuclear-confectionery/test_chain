@@ -4,7 +4,10 @@ from specializations.ICCING_overlay import ICCINGOverlay
 from specializations.freestreaming_preequilibrium import Freestreaming
 from specializations.ccake_hydro import CCAKEHydro
 from specializations.is3d_particlization import iS3DParticlization
+from specializations.BQSSampler_particlization import BQSSamplerParticlization
+from specializations.analytical_particlization import AnalyticalParticlization
 from specializations.smash_afterburner import SMASHAfterburner
+from specializations.afterdecays_afterburner import AfterdecaysAfterburner
 from specializations.qvector_writter_analysis import QVectorWritterAnalysis
 from specializations.ampt_initial_condition import AmptInitialCondition
 from specializations.amptgenesis_overlay import AmptGenesisOverlay
@@ -140,6 +143,10 @@ def main():
 
     if particlization_type == 'is3d':
         particlization_stage = iS3DParticlization(config, db_connection)
+    elif particlization_type == 'bqssampler':
+        particlization_stage = BQSSamplerParticlization(config, db_connection)
+    elif particlization_type == 'analytical':
+        particlization_stage = AnalyticalParticlization(config, db_connection)
     elif particlization_type == 'none':
         particlization_stage = NoneParticlization(config, db_connection)
         config['input']['particlization']['type'] = None
@@ -159,6 +166,8 @@ def main():
         config['input']['afterburner']['type'] = None
     elif afterburner_type == 'smash':
         afterburner_stage = SMASHAfterburner(config, db_connection)
+    elif afterburner_type == 'afterdecays':
+        afterburner_stage = AfterdecaysAfterburner(config, db_connection)
     else:
         raise ValueError(f"Unknown afterburner type: {afterburner_type}")
     

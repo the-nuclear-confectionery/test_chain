@@ -27,7 +27,6 @@ class SMASHAfterburner(Afterburner):
                 raise ValueError("No particlization module specified, input file and number of samples 'Nevents' must be provided.")
             if self.config['input']['afterburner']['parameters']['General']['Nevents'] == 1:
                 print("Warning - Using number of samples 'Nevents' =1, check if matches your setup.")
-
         elif self.config['input']['particlization']['type'] == 'is3d':
             print("iS3D particlization detected, using particle list from iS3D.")
             if self.config['input']['afterburner']['parameters']['input_file']== "default":
@@ -35,6 +34,15 @@ class SMASHAfterburner(Afterburner):
                 self.config['input']['afterburner']['parameters']['input_file'] = file_is3d
             #copy number of samples
             self.config['input']['afterburner']['parameters']['General']['Nevents'] = self.config['input']['particlization']['parameters']['max_num_samples']
+        elif self.config['input']['particlization']['type'] == 'BQSSampler':
+            print("BQSSampler particlization detected.")
+            if self.config['input']['afterburner']['parameters']['input_file']== "default":
+                file_bqssampler = os.path.join(self.config['global']['output'], f"event_{event_id}", "BQSSampler", "particle_list.dat")
+                self.config['input']['afterburner']['parameters']['input_file'] = file_bqssampler
+            #copy number of samples
+            self.config['input']['afterburner']['parameters']['General']['Nevents'] = self.config['input']['particlization']['parameters']['samples']
+        else:
+            raise ValueError("Particlization type not support for SMASH")
 
         #break input file into dir and file
         input_file = self.config['input']['afterburner']['parameters']['input_file']

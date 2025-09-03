@@ -16,8 +16,19 @@ class QVectorWritterAnalysis(Analysis):
 
         # Check for afterburner
         if self.config['input']['afterburner']['type'] is None:
-            if parameters.get('input_file', 'default') == 'default':
-                raise ValueError("Afterburner is disabled, input_file must be specified.")
+            if self.config['input']['particlization']['type'] == 'analytical':
+                parameters['input_file'] = os.path.join(
+                    self.config['global']['output'],
+                    f"event_{event_id}",
+                    "analytical",
+                    "corrected_spectra.dat"
+                )
+                if 'input_type' not in parameters or parameters['input_type'] == 'default':
+                    parameters['input_type'] = 'afterdecays'
+                print("No afterburner specified; using corrected spectra from analytical cooperfrye")
+            else:
+                if parameters.get('input_file', 'default') == 'default':
+                    raise ValueError("Afterburner is disabled, input_file must be specified.")
         elif self.config['input']['afterburner']['type'] == 'smash':
             formats = self.config['input']['afterburner']['parameters']['Output']['Particles']['Format']
             output_path = os.path.join(
@@ -25,7 +36,6 @@ class QVectorWritterAnalysis(Analysis):
                 f"event_{event_id}",
                 "smash"
             )
-
             # --- Determine default input file and type ---
             if 'HepMC_treeroot' in formats:
                 parameters['input_file'] = os.path.join(output_path, "SMASH_HepMC_particles.root")
@@ -36,7 +46,20 @@ class QVectorWritterAnalysis(Analysis):
                 if 'input_type' not in parameters or parameters['input_type'] == 'default':
                     parameters['input_type'] = 'smash_oscar'
             else:
-                raise ValueError("SMASH afterburner output must include either 'HepMC_treeroot' or 'Oscar2013' format.")
+                print("Using SMASH default format")
+                parameters['input_file'] = os.path.join(output_path, "SMASH_HepMC_particles.root")
+                if 'input_type' not in parameters or parameters['input_type'] == 'default':
+                    parameters['input_type'] = 'smash_hepmc3'
+        elif self.config['input']['afterburner']['type'] == 'afterdecays':
+            print("afterdecays afterburner detected, using its output.")
+            parameters['input_file'] = os.path.join( self.config['global']['output'],
+                f"event_{event_id}",
+                "afterdecays",
+                "output.dat"
+            )
+            if 'input_type' not in parameters or parameters['input_type'] == 'default':
+                parameters['input_type'] = 'afterdecays'
+
 
         # Resolve output file
         if parameters.get('output_file', 'default') == 'default':
@@ -45,14 +68,13 @@ class QVectorWritterAnalysis(Analysis):
                 f"q_{event_id}"
             )
 
-        print(f"QVectorWritter parameters resolved:")
+        print(f"qvector writter validation done")
         print(f"input_file:  {parameters['input_file']}")
         print(f"output_file: {parameters['output_file']}")
-        print(f"input_type:  {parameters.get('input_type')}")
+        print(f"input_type:  {parameters['input_type']}")
 
 
     def create_temp_config(self, event_id):
-        """Create temporary YAML config file for QVectorWritter."""
         parameters = self.config['input']['analysis']['parameters']
 
         # Destination path
@@ -62,15 +84,15 @@ class QVectorWritterAnalysis(Analysis):
 
         # Extract relevant config keys
         qvector_config = {
-            'n_max': parameters.get('n_max', 6),
-            'calculate_charged': parameters.get('calculate_charged', True),
-            'pids': parameters.get('pids', []),
-            'pt_bins': parameters.get('pt_bins', 120),
-            'max_pt': parameters.get('max_pt', 6.0),
-            'eta_bins': parameters.get('eta_bins', 108),
-            'max_eta': parameters.get('max_eta', 5.4),
-            'input_type': parameters.get('input_type', 'afterdecays'),
-            'output_type': parameters.get('output_type', 'root'),
+            'n_max': parameters.get('n_max'),
+            'calculate_charged': parameters.get('calculate_charged'),
+            'pids': parameters.get('pids'),
+            'pt_bins': parameters.get('pt_bins'),
+            'max_pt': parameters.get('max_pt'),
+            'eta_bins': parameters.get('eta_bins'),
+            'max_eta': parameters.get('max_eta'),
+            'input_type': parameters.get('input_type'),
+            'output_type': parameters.get('output_type'),
         }
 
         if 'pt_bins_custom' in parameters:

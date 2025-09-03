@@ -970,331 +970,248 @@ properties:
         properties:
           type:
             type: string
-            enum: [is3d]
-          parameters:
-            type: object
-            additionalProperties: false
-            properties:
-              operation:
-                type: integer
-                description: "Operation mode to run the sampler or distribution generator."
-                enum: [0, 1, 2]
-                default: 2
-              mode:
-                anyOf:
-                  - type: string
-                    enum: ["default"]
-                  - type: integer
-                    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-                default: "default"
-                description: " # 0: reads freezeout file from 3+1D viscous hydro (old gpu-vh format)
-				                       # 1: reads freezeout file from 3+1D viscous hydro (gpu-vh format)
-					                     # 2: reads freezeout file from 3+1D viscous anisotropic hydro (PL matching)
-					                     # 3: reads freezeout file from 3+1D viscous anisotropic hydro (PL,PT matching)
-					                     # 4: reads freezeout file from 2+1D viscous hydro (old MUSIC boost invariant format)
-					                     # 5: reads freezeout file from 3+1D viscous hydro with thermal vorticity terms (gpu-vh format)
-					                     # 6: reads freezeout file from 2+1D viscous hydro (new public MUSIC boost invariant format)
-					                     # 7: reads freezeout file from 2+1D viscous hydro (hic-eventgen format)
-					                     # 8: reads freezeout file from 2+1D viscous hydro (CCAKE)
-					                     # 9: reads freezeout file from 3+1D viscous hydro (CCAKE)
-					                     #10: reads freezeout file from 2+1D viscous hydro (CCAKE v1)"
-
-
-              hrg_eos:
-                type: integer
-                description: "Selects the HRG equation of state."
-                enum: [1, 2, 3]
-                default: 2
-                description: "  # 1: urqmd
-                                # 2: smash
-                                # 3: smash_box"
-
-              set_FO_temperature:
-                type: integer
-                description: "Whether to override freezeout temperature in the surface file."
-                enum: [0, 1]
-                default: 0
-
-              T_switch:
-                type: number
-                description: "Override freezeout temperature if set_FO_temperature is enabled."
-                default: 0.150
-
-              dimension:
-                type: integer
-                description: "Dimensionality of the freezeout surface."
-                enum: [2, 3]
-                default: 2
-
-              df_mode:
-                type: integer
-                description: "Mode for type of delta-f correction."
-                default: 8
-
-              include_baryon:
-                type: integer
-                description: "Include baryon chemical potential in distribution function."
-                default: 1
-
-              include_bulk_deltaf:
-                type: integer
-                description: "Include bulk delta-f correction."
-                default: 0
-
-              include_shear_deltaf:
-                type: integer
-                description: "Include shear delta-f correction."
-                default: 1
-
-              include_baryondiff_deltaf:
-                type: integer
-                description: "Include baryon diffusion delta-f correction."
-                default: 0
-
-              regulate_deltaf:
-                type: integer
-                description: "Force |delta_f| < f_eq for VH and |delta_f~| < f_a for VAH."
-                default: 1
-
-              outflow:
-                type: integer
-                description: "Include Theta(p.dsigma) in smooth CFF."
-                default: 1
-
-              deta_min:
-                type: number
-                description: "Minimum value of detA for feqmod breakdown."
-                default: 1.0e-5
-
-              group_particles:
-                type: integer
-                description: "Group particles with similar mass to speed up calculations."
-                default: 0
-
-              particle_diff_tolerance:
-                type: number
-                description: "Grouping particle mass tolerance."
-                default: 0.01
-
-              mass_pion0:
-                type: number
-                description: "Lightest pion mass (GeV) for feqmod breakdown criteria."
-                default: 0.180
-
-              do_resonance_decays:
-                type: integer
-                description: "Switch for resonance decays after thermal spectra calculation."
-                default: 0
-
-              lightest_particle:
-                type: integer
-                description: "PDG MC ID of lightest particle for resonance decay feed-down."
-                default: 111
-
-              oversample:
-                type: integer
-                description: "Run sampler iteratively until minimum number of hadrons sampled."
-                default: 1
-
-              min_num_hadrons:
-                type: number
-                description: "Minimum number of hadrons to be sampled across all samples."
-                default: 1.0e+8
-
-              max_num_samples:
-                type: integer
-                description: "Maximum number of samples for oversampling."
-                default: 1
-
-              fast:
-                type: integer
-                description: "Run sampler in fast mode assuming (T, muB) throughout the surface are close to their averages."
-                default: 0
-
-              y_cut:
-                type: number
-                description: "Rapidity cut: |y| <= y_cut."
-                default: 5.0
-              seed:
-                anyOf:
-                  - type: string
-                  - type: integer
-                default: "random"
-                description: "Accepts 'random' or an integer value as the random seed."
-
-              test_sampler:
-                type: integer
-                description: "Perform sampler test only (write sampled pT spectra and v_n to a file)."
-                default: 0
-
-              pT_lower_cut:
-                type: number
-                description: "Lower cut-off for pT in GeV (used for sampler tests)."
-                default: 0.0
-
-              pT_upper_cut:
-                type: number
-                description: "Upper cut-off for pT in GeV (used for sampler tests)."
-                default: 3.0
-
-              pT_bins:
-                type: integer
-                description: "Number of pT bins (used for sampler tests)."
-                default: 100
-
-              y_bins:
-                type: integer
-                description: "Number of rapidity bins."
-                default: 50
-
-              eta_cut:
-                type: number
-                description: "Pseudo-rapidity cut: |eta| <= eta_cut."
-                default: 7.0
-
-              eta_bins:
-                type: integer
-                description: "Number of eta bins."
-                default: 70
-
-              tau_min:
-                type: number
-                description: "Minimum tau value (fm) for sampled dN/dtaudy test."
-                default: 0.0
-
-              tau_max:
-                type: number
-                description: "Maximum tau value (fm) for sampled dN/dtaudy test."
-                default: 12.0
-
-              tau_bins:
-                type: integer
-                description: "Number of tau bins for sampled dN/dtaudy test."
-                default: 120
-
-              r_min:
-                type: number
-                description: "Minimum radius (fm) for sampled dN/drdy test."
-                default: 0.0
-
-              r_max:
-                type: number
-                description: "Maximum radius (fm) for sampled dN/drdy test."
-                default: 12.0
-
-              r_bins:
-                type: integer
-                description: "Number of radius bins for sampled dN/drdy test."
-                default: 60
-                
-              input_file:
-                type: string
-                default: default
-                description: "Path to the input file containing freezeout surface data."
+            enum: [is3d, analytical, BQSSampler]
+        required: [type]            
+        allOf:
+          # ---- iS3D ----
+          - if:
+              properties: { type: { const: is3d } }
+            then:
+              properties:
+                parameters:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    input_file:
+                      type: string
+                      default: default
+                      description: "Path to freezeout surface file for iS3D."
+                    operation: { type: integer, enum: [0,1,2], default: 2 }
+                    mode:
+                      anyOf:
+                        - { type: string, enum: ["default"] }
+                        - { type: integer, enum: [0,1,2,3,4,5,6,7,8,9,10] }
+                      default: "default"
+                    hrg_eos: { type: integer, enum: [1,2,3], default: 2 }
+                    set_FO_temperature: { type: integer, enum: [0,1], default: 0 }
+                    T_switch: { type: number, default: 0.150 }
+                    dimension: { type: integer, enum: [2,3], default: 2 }
+                    df_mode: { type: integer, default: 8 }
+                    include_baryon: { type: integer, default: 1 }
+                    include_bulk_deltaf: { type: integer, default: 0 }
+                    include_shear_deltaf: { type: integer, default: 1 }
+                    include_baryondiff_deltaf: { type: integer, default: 0 }
+                    regulate_deltaf: { type: integer, default: 1 }
+                    outflow: { type: integer, default: 1 }
+                    deta_min: { type: number, default: 1.0e-5 }
+                    group_particles: { type: integer, default: 0 }
+                    particle_diff_tolerance: { type: number, default: 0.01 }
+                    mass_pion0: { type: number, default: 0.180 }
+                    do_resonance_decays: { type: integer, default: 0 }
+                    lightest_particle: { type: integer, default: 111 }
+                    oversample: { type: integer, default: 1 }
+                    min_num_hadrons: { type: number, default: 1.0e+8 }
+                    max_num_samples: { type: integer, default: 1 }
+                    fast: { type: integer, default: 0 }
+                    y_cut: { type: number, default: 5.0 }
+                    seed:
+                      anyOf: [{ type: string }, { type: integer }]
+                      default: "random"
+                    test_sampler: { type: integer, default: 0 }
+                    pT_lower_cut: { type: number, default: 0.0 }
+                    pT_upper_cut: { type: number, default: 3.0 }
+                    pT_bins: { type: integer, default: 100 }
+                    y_bins: { type: integer, default: 50 }
+                    eta_cut: { type: number, default: 7.0 }
+                    eta_bins: { type: integer, default: 70 }
+                    tau_min: { type: number, default: 0.0 }
+                    tau_max: { type: number, default: 12.0 }
+                    tau_bins: { type: integer, default: 120 }
+                    r_min: { type: number, default: 0.0 }
+                    r_max: { type: number, default: 12.0 }
+                    r_bins: { type: integer, default: 60 }
+      
+          # ---- BQSSampler ----
+          - if:
+              properties: { type: { const: BQSSampler } }
+            then:
+              properties:
+                parameters:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    input_file:
+                      type: string
+                      default: default
+                      description: "Path to freezeout surface file for BSQ sampler."
+                    mode:
+                      type: string
+                      enum: [ccakev2,ccakev1]
+                      default: ccakev2
+                    coordinate_system:
+                      type: string
+                      enum: [cartesian, hyperbolic]
+                      default: hyperbolic
+                    dimension:
+                      type: integer
+                      enum: [2,3]
+                      default: 3
+                    use_muB: { type: boolean, default: false }
+                    use_muS: { type: boolean, default: false }
+                    use_muQ: { type: boolean, default: false }
+                    samples: { type: integer, minimum: 1, default: 100 }
+                    sampling_method:
+                      type: string
+                      enum: [regular, conserved]
+                      default: regular
+                    delta_f_shear: { type: boolean, default: false }
+                    seed:
+                      anyOf: [{ type: string }, { type: integer }]
+                      default: "random"
+                    y_max: { type: number, default: 5.0 }
+                    output_file: { type: string, default: default }
+                    tables_path: { type: string, default: default }
+      
+          # ---- analytical ----
+          - if:
+              properties: { type: { const: analytical } }
+            then:
+              properties:
+                parameters:
+                  type: object
+                  additionalProperties: true
+                  properties:
+                    input_file:
+                      type: string
+                      default: default
+                      description: "Path to analytical particlization input file."
+                    equations_version:
+                      type: string
+                      enum: [shear+bulk,idealBSQ, v2]
+                      default: v2
+                    folder: { type: string }
+                    temperature: { type: number, default: 0.150 }
+                    decays: { type: integer, enum: [0,1,2,3], default: 0 }
+                    event_range:
+                      type: array
+                      items: { type: integer }
+                      minItems: 2
+                      maxItems: 2
+                      default: [0,0]
+                    basis_files:
+                      type: array
+                      items: { type: string , default: default }
+                      minItems: 2
+                    df_correction_file: { type: string, default: default }
+                    ptphi_grid_file:    { type: string, default: default }
+                    hadron_list_file:   { type: string, default: default }
+                    hadron_check_file:  { type: string, default: default }
+      
       afterburner:
         type: object
+        default: {}
         properties:
           type:
             type: string
-            enum: [smash]
-          parameters:
-            type: object
-            properties:
-              decays_only:
-                type: boolean
-                default: false
-                description: "If true, only decays are performed without rescattering."
-              input_file:
-                type: string
-                default: default
-                description: "Path to the input file containing freezeout surface data."
-              Logging:
-                type: object
-                properties:
-                  default:
-                    type: string
-                    enum: [DEBUG, INFO, WARN, ERROR]
-                    description: "Logging level for the simulation."
-                    default: INFO
-
-              General:
-                type: object
-                properties:
-                  Modus:
-                    type: string
-                    enum: [List]
-                    description: "Simulation mode (List, etc.)."
-                    default: List
-                  Time_Step_Mode:
-                    type: string
-                    enum: [Fixed]
-                    description: "Time step control mode."
-                    default: Fixed
-                  Delta_Time:
-                    type: number
-                    default: 1.0
-                    description: "Fixed time step value in fm/c."
-                  End_Time:
-                    type: number
-                    default: 1000.0
-                    description: "End time of the simulation in fm/c."
-                  seed:
-                    anyOf:
-                      - type: string
-                      - type: integer
-                    default: random
-                    description: "Seed for random number generation. Negative for random."
-                  Nevents:
-                    type: integer
-                    minimum: 1
-                    default: 1
-                    description: "Number of events to simulate."
-
-              Output:
-                type: object
-                properties:
-                  Output_Interval:
-                    type: number
-                    default: 1000.0
-                    description: "Interval for writing output."
-                  Particles:
-                    type: object
-                    properties:
-                      Format:
-                        type: array
-                        items:
+            enum: [smash, afterdecays, none]   # 'none' lets you explicitly disable
+        allOf:
+          # ---- SMASH ----
+          - if:
+              properties: { type: { const: smash } }
+              required: [type]
+            then:
+              properties:
+                parameters:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    decays_only:
+                      type: boolean
+                      default: false
+                      description: "If true, only decays are performed without rescattering."
+                    input_file:
+                      type: string
+                      default: default
+                      description: "Path to the input file containing freezeout surface data."
+                    Logging:
+                      type: object
+                      properties:
+                        default:
                           type: string
-                          enum: ["Oscar2013", "HepMC_treeroot"]
-                        default: ["Oscar2013", "HepMC_treeroot"]
-                        description: "List of output formats for particle data."
+                          enum: [DEBUG, INFO, WARN, ERROR]
+                          default: INFO
+                          description: "Logging level for the simulation."
+                    General:
+                      type: object
+                      properties:
+                        Modus:          { type: string, enum: [List],  default: List }
+                        Time_Step_Mode: { type: string, enum: [Fixed], default: Fixed }
+                        Delta_Time:     { type: number, default: 1.0 }
+                        End_Time:       { type: number, default: 1000.0 }
+                        seed:
+                          anyOf: [{ type: string }, { type: integer }]
+                          default: random
+                        Nevents:        { type: integer, minimum: 1, default: 1 }
+                    Output:
+                      type: object
+                      properties:
+                        Output_Interval: { type: number, default: 1000.0 }
+                        Particles:
+                          type: object
+                          properties:
+                            Format:
+                              type: array
+                              items: { type: string, enum: ["Oscar2013", "HepMC_treeroot"] }
+                              default: ["Oscar2013", "HepMC_treeroot"]
+                    Collision_Term:
+                      type: object
+                      properties:
+                        No_Collisions:         { type: boolean, default: false }
+                        Force_Decays_At_End:   { type: boolean, default: false }
+                    Modi:
+                      type: object
+                      properties:
+                        List:
+                          type: object
+                          properties:
+                            File_Directory: { type: string, default: "../input/list" }
+                            Filename:       { type: string, default: "particle_list_osc.dat" }
 
-              Collision_Term:
-                type: object
-                properties:
-                  No_Collisions:
-                    type: boolean
-                    default: false
-                    description: "Disable particle collisions."
-                  Force_Decays_At_End:
-                    type: boolean
-                    default: false
-                    description: "Force particle decays at the end of simulation."
+          # ---- AFTERDECAYS ----
+          - if:
+              properties: { type: { const: afterdecays } }
+              required: [type]
+            then:
+              properties:
+                parameters:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    path_to_pT_range:
+                      type: string
+                      default: default
+                      description: "Path to pT grid/basis file (e.g., gl15.dat)."
+                    path_to_phi_range:
+                      type: string
+                      default: default
+                      description: "Path to phi grid/basis file (e.g., gq20.dat)."
+                    path_to_spectra:
+                      type: string
+                      default: default
+                      description: "Path to input spectra table (e.g., evv2_dNdphidpp.dat)."
+                    path_to_resonances:
+                      type: string
+                      default: default
+                      description: "Path to resonance list (e.g., resoweakPDG2016Plus.dat)."
+                    path_to_output:
+                      type: string
+                      default: default
+                      description: "Output directory for the decayed spectra."
+                    use_corrected:
+                      type: boolean
+                      default: true
+                      description: "Use corrected spectra if true; otherwise, use uncorrected."
 
-              Modi:
-                type: object
-                properties:
-                  List:
-                    type: object
-                    properties:
-                      File_Directory:
-                        type: string
-                        default: "../input/list"
-                        description: "Directory containing the input particle list."
-                      Filename:
-                        type: string
-                        default: "particle_list_osc.dat"
-                        description: "Input file containing initial particle list."
-      
       analysis:
         type: object
         properties:
@@ -1355,8 +1272,8 @@ properties:
       
               input_type:
                 type: string
-                enum: ["smash_hepmc3", "smash_oscar", "afterdecays"]
-                default: "afterdecays"
+                enum: ["smash_hepmc3", "smash_oscar", "afterdecays","default"]
+                default: "default"
                 description: "Input format to be parsed."
       
               output_type:

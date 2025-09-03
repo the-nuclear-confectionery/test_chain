@@ -14,5 +14,5 @@ class NoneAnalysis(Analysis):
             self.db_connection,
             event_id=event_id,
             analysis_type=None,
-            rapidity_cut=None,
+            n_max = None
         )

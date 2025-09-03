@@ -119,6 +119,20 @@ mkdir build && cd build
 cmake ..
 make -j8 install
 
+cd $WORKDIR/models/BQSSampler
+mkdir build && cd build
+cmake .. 
+make -j8 
+
+cd $WORKDIR/models/analytical_cooperfrye
+make clean
+make -j
+
+cd $WORKDIR/models/decays
+mkdir build && cd build
+cmake ..
+make -j8
+
 #5) Setup environment variables
 export SMASH_DIR="${WORKDIR}/models/smash/"
 
@@ -150,6 +164,9 @@ cd $WORKDIR
 mkdir -p tables
 mkdir -p tables/ICCING
 mkdir -p tables/iS3D
+mkdir -p tables/BQSSampler
+mkdir -p tables/analytical_cooperfrye
+
 
 cp -rf $WORKDIR/models/CCAKE/EoS/Houston/* tables
 
@@ -161,6 +178,11 @@ cp -rf $WORKDIR/models/ICCING/Greens_Function/*.txt tables/ICCING/
 cp -rf $WORKDIR/models/iS3D/tables tables/iS3D
 cp -rf $WORKDIR/models/iS3D/PDG tables/iS3D
 cp -rf $WORKDIR/models/iS3D/deltaf_coefficients tables/iS3D
+
+cp -rf $WORKDIR/models/BQSSampler/integration_tables/*.dat tables/BQSSampler/
+cp -rf $WORKDIR/models/BQSSampler/particles/*.dat tables/BQSSampler/
+cp -rf $WORKDIR/models/BQSSampler/utils/*.dat tables/BQSSampler/
+
 
 
 cd $WORKDIR/scripts
