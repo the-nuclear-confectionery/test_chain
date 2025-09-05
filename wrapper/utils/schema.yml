@@ -963,6 +963,10 @@ properties:
                 type: boolean
                 default: false
                 description: "Calculate observables during the simulation."
+              check_causality:
+                type: boolean
+                default: false
+                description: "Check for causality violations during the simulation."
               
 
       particlization:
