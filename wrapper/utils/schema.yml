@@ -974,8 +974,7 @@ properties:
         properties:
           type:
             type: string
-            enum: [is3d, analytical, BQSSampler]
-        required: [type]            
+            enum: [is3d, analytical, BQSSampler]      
         allOf:
           # ---- iS3D ----
           - if:

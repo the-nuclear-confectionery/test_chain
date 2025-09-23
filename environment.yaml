@@ -13,8 +13,8 @@ dependencies:
   
   # General libraries and tools
   - parallel
-  - gxx=11.4.0  # Compiler
-  - gcc=11.4.0
+  - gxx=13.3.0  # Compiler
+  - gcc=13.3.0
   - openmpi
   - hdf5
   - zlib
