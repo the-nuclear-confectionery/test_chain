@@ -50,6 +50,8 @@ cmake -DCMAKE_BUILD_TYPE="Release" \
 cmake --build . --target install -j
 
 git clone https://github.com/ECP-copa/Cabana.git $CABANASRC
+cd $CABANASRC
+git checkout 2b642f8dbba760e2008f8b81a4196e6adf100f42
 mkdir -p $CABANASRC/build && cd $CABANASRC/build
     cmake -D CMAKE_BUILD_TYPE="Release" \
           -D CMAKE_CXX_STANDARD=17 \
