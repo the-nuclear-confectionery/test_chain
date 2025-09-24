@@ -19,7 +19,7 @@ cd ..
 mkdir hepmc3-build          
 cd hepmc3-build
 
-cmake -DHEPMC3_ENABLE_ROOTIO=ON -DROOT_DIR=${ROOTSYS} -DCMAKE_INSTALL_PREFIX=$PREFIX ../HepMC3
+cmake -DHEPMC3_ENABLE_ROOTIO=ON -DROOT_DIR=${ROOTSYS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_POLICY_VERSION_MINIMUM=3.5  ../HepMC3
 make -j8 install
 
 cd $PREFIX
@@ -87,7 +87,7 @@ sed -i '28 s/0/11/' input.ampt
 
 cd $WORKDIR/models/trento
 mkdir build && cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX
+cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 make -j8 install
 
 cd $WORKDIR/models/ICCING
