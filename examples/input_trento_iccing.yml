@@ -51,11 +51,19 @@ input:
       online_inverter_enabled: true
       
   particlization:
-    type: is3d
+    type: BQSSampler
     parameters:
-      mode: 8
-      oversample: 1
-      max_num_samples: 200
+      mode: ccakev2
+      coordinate_system: hyperbolic
+      dimension: 2
+      use_muB: true
+      use_muS: true
+      use_muQ: true
+      samples: 500
+      sampling_method: regular
+      delta_f_shear: true
+      y_max: 5.0
+
   
   afterburner:
     type: smash
