@@ -53,14 +53,14 @@ git clone https://github.com/ECP-copa/Cabana.git $CABANASRC
 cd $CABANASRC
 git checkout 2b642f8dbba760e2008f8b81a4196e6adf100f42
 mkdir -p $CABANASRC/build && cd $CABANASRC/build
-    cmake -D CMAKE_BUILD_TYPE="Release" \
-          -D CMAKE_CXX_STANDARD=17 \
-          -D CMAKE_PREFIX_PATH=$CABANASRC \
-          -D CMAKE_INSTALL_PREFIX=$PREFIX \
-          -D CMAKE_CXX_COMPILER=g++\
-          -D Cabana_REQUIRE_CUDA=OFF \
-          -D Cabana_ENABLE_TESTING=OFF \
-          -D Cabana_ENABLE_EXAMPLES=OFF $CABANASRC
+    cmake -DCMAKE_BUILD_TYPE="Release" \
+          -DCMAKE_CXX_STANDARD=17 \
+          -DCMAKE_PREFIX_PATH=$CABANASRC \
+          -DCMAKE_INSTALL_PREFIX=$PREFIX \
+          -DCMAKE_CXX_COMPILER=g++\
+          -DCabana_REQUIRE_CUDA=OFF \
+          -DCabana_ENABLE_TESTING=OFF \
+          -DCabana_ENABLE_EXAMPLES=OFF $CABANASRC
 cmake --build . --target install -j
 
 
